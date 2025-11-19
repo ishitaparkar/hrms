@@ -1,0 +1,32 @@
+Welcome to {{ organization_name }}
+
+Dear {{ employee_first_name }} {{ employee_last_name }},
+
+Welcome to {{ organization_name }}! Your employee account has been successfully created. You can now access the HRMS portal to view your information, request leave, and stay connected with the organization.
+
+YOUR LOGIN CREDENTIALS
+=======================
+
+Employee ID:         {{ employee_id }}
+Username:            {{ username }}
+Temporary Password:  {{ temporary_password }}
+
+Please log in at: {{ portal_url }}
+
+
+IMPORTANT SECURITY INFORMATION
+===============================
+
+For your security, you will be required to change your password immediately upon your first login. Please do not share your credentials with anyone. If you did not expect this email or have any concerns, please contact the HR department immediately.
+
+
+If you have any questions or need assistance, please don't hesitate to contact the HR team.
+
+Best regards,
+HR Team
+
+---
+This is an automated message from {{ organization_name }} HRMS.
+Please do not reply to this email.
+
+© {% now "Y" %} {{ organization_name }}. All rights reserved.
