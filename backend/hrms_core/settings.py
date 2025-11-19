@@ -97,8 +97,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'hrms_db',
-        'USER': 'hrms_user',
-        'PASSWORD': 'your_secure_password_here', # The password you created
+        'USER': 'postgres', # Your PostgreSQL username
+        'PASSWORD': 'password', # The password you created
         'HOST': 'localhost',
         'PORT': '5432', # Default PostgreSQL port
     }
