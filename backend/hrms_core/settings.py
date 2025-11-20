@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -20,17 +21,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from .env file
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
+# Validate configuration settings on startup (skip during migrations and other management commands)
+if 'runserver' in sys.argv or 'gunicorn' in sys.argv[0]:
+    from .settings_validation import validate_required_settings
+    try:
+        validate_required_settings()
+    except Exception as e:
+        # Print error but don't crash during development
+        print(f"⚠️  Configuration validation warning: {e}")
+        if os.environ.get('DEBUG', 'True') != 'True':
+            # In production, fail fast on configuration errors
+            raise
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lhi9&5ha)e4s-7(%7&k33&fd4p&%txy4&=f5w%^bm#pu)@wwyb'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-lhi9&5ha)e4s-7(%7&k33&fd4p&%txy4&=f5w%^bm#pu)@wwyb')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
 
 
 # Application definition
@@ -96,11 +109,11 @@ WSGI_APPLICATION = 'hrms_core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hrms_db',
-        'USER': 'postgres', # Your PostgreSQL username
-        'PASSWORD': 'password', # The password you created
-        'HOST': 'localhost',
-        'PORT': '5432', # Default PostgreSQL port
+        'NAME': os.environ.get('DB_NAME', 'hrms_db'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'password'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -146,10 +159,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Add this to the end of the file
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+# CORS Configuration
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',') if os.environ.get('CORS_ALLOWED_ORIGINS') else ['http://localhost:3000']
 
 # REST Framework configuration
 REST_FRAMEWORK = {
@@ -189,3 +200,32 @@ EMAIL_TIMEOUT = int(os.environ.get('EMAIL_TIMEOUT', '10'))
 # Media files (uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# =============================================================================
+# ONBOARDING & AUTHENTICATION CONFIGURATION
+# =============================================================================
+# Organization name displayed in welcome emails and portal
+ORGANIZATION_NAME = os.environ.get('ORGANIZATION_NAME', 'HRMS')
+
+# Portal URL where employees access the system
+PORTAL_URL = os.environ.get('PORTAL_URL', 'http://localhost:3000')
+
+# Account setup token expiration time (in hours)
+ACCOUNT_SETUP_TOKEN_EXPIRY_HOURS = int(os.environ.get('ACCOUNT_SETUP_TOKEN_EXPIRY_HOURS', '24'))
+
+# Maximum failed authentication attempts before account lockout
+MAX_FAILED_AUTH_ATTEMPTS = int(os.environ.get('MAX_FAILED_AUTH_ATTEMPTS', '3'))
+
+# Phone authentication rate limiting
+PHONE_AUTH_RATE_LIMIT_ATTEMPTS = int(os.environ.get('PHONE_AUTH_RATE_LIMIT_ATTEMPTS', '5'))
+PHONE_AUTH_RATE_LIMIT_WINDOW_MINUTES = int(os.environ.get('PHONE_AUTH_RATE_LIMIT_WINDOW_MINUTES', '15'))
+
+# Temporary password configuration
+TEMP_PASSWORD_MIN_LENGTH = int(os.environ.get('TEMP_PASSWORD_MIN_LENGTH', '12'))
+
+# Password validation requirements
+PASSWORD_MIN_LENGTH = int(os.environ.get('PASSWORD_MIN_LENGTH', '8'))
+
+# Audit logging configuration
+ENABLE_AUDIT_LOGGING = os.environ.get('ENABLE_AUDIT_LOGGING', 'True') == 'True'
+AUDIT_LOG_RETENTION_DAYS = int(os.environ.get('AUDIT_LOG_RETENTION_DAYS', '90'))

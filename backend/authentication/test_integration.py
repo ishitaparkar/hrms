@@ -360,27 +360,27 @@ class LeaveManagementEndpointIntegrationTests(TestCase):
         # Create leave requests
         self.cs_leave1 = LeaveRequest.objects.create(
             employee=self.cs_employee1,
-            leaveType='Sick Leave',
-            startDate='2024-02-01',
-            endDate='2024-02-03',
+            leave_type='Sick Leave',
+            start_date='2024-02-01',
+            end_date='2024-02-03',
             reason='Medical appointment',
             status='Pending'
         )
         
         self.cs_leave2 = LeaveRequest.objects.create(
             employee=self.cs_employee2,
-            leaveType='Vacation',
-            startDate='2024-03-01',
-            endDate='2024-03-05',
+            leave_type='Vacation',
+            start_date='2024-03-01',
+            end_date='2024-03-05',
             reason='Family vacation',
             status='Pending'
         )
         
         self.math_leave = LeaveRequest.objects.create(
             employee=self.math_employee,
-            leaveType='Sick Leave',
-            startDate='2024-02-10',
-            endDate='2024-02-12',
+            leave_type='Sick Leave',
+            start_date='2024-02-10',
+            end_date='2024-02-12',
             reason='Flu',
             status='Pending'
         )

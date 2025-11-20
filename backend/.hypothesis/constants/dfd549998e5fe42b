@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/employee_management/tests.py
+# hypothesis_version: 6.141.1
+
+[200, 404, 2020, 2023, 2024, '+1-555-0001', '+1-555-0002', '+1-555-0003', '+1-555-0004', '+1-555-1234', 'Alice', 'Bob', 'Computer Science', 'Doe', 'EMP001', 'EMP002', 'EMP003', 'Engineering', 'Engineering Manager', 'Jane', 'John', 'John Doe (EMP001)', 'Jones', 'MGR001', 'Manager', 'Marketing', 'Marketing Specialist', 'Professor', 'Smith', 'Software Engineer', 'alice.smith@test.com', 'bob.jones@test.com', 'department', 'designation', 'different@test.com', 'employeeId', 'error', 'firstName', 'id', 'john.doe', 'john.doe@test.com', 'joiningDate', 'lastName', 'manager', 'mobileNumber', 'noemployee', 'noemployee@test.com', 'personalEmail', 'team_member_count', 'team_members', 'testpass123', 'testuser', 'testuser@test.com']

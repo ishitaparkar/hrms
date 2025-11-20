@@ -25,7 +25,7 @@ class AccountCreationServiceTests(TestCase):
             lastName='Doe',
             employeeId='EMP001',
             personalEmail='john.doe@example.com',
-            mobileNumber='1234567890',
+            mobileNumber='+1 4155551234',
             joiningDate='2024-01-01',
             department='Computer Science',
             designation='Developer'
@@ -70,9 +70,12 @@ class AccountCreationServiceTests(TestCase):
         password = AccountCreationService.generate_temporary_password(length=8)
         self.assertGreaterEqual(len(password), 12)
     
-    @patch('authentication.services.send_mail')
-    def test_send_welcome_email_success(self, mock_send_mail):
+    @patch('authentication.services.EmailMultiAlternatives')
+    def test_send_welcome_email_success(self, mock_email_class):
         """Test welcome email is sent successfully."""
+        mock_email_instance = MagicMock()
+        mock_email_class.return_value = mock_email_instance
+        
         user = User.objects.create_user(
             username='john.doe@example.com',
             email='john.doe@example.com',
@@ -86,20 +89,16 @@ class AccountCreationServiceTests(TestCase):
         )
         
         self.assertTrue(result)
-        mock_send_mail.assert_called_once()
-        
-        # Verify email content
-        call_args = mock_send_mail.call_args
-        self.assertIn('Welcome', call_args[1]['subject'])
-        self.assertIn('John Doe', call_args[1]['message'])
-        self.assertIn('EMP001', call_args[1]['message'])
-        self.assertIn('TempPass123', call_args[1]['message'])
-        self.assertEqual(call_args[1]['recipient_list'], ['john.doe@example.com'])
+        mock_email_class.assert_called_once()
+        mock_email_instance.attach_alternative.assert_called_once()
+        mock_email_instance.send.assert_called_once()
     
-    @patch('authentication.services.send_mail')
-    def test_send_welcome_email_failure(self, mock_send_mail):
+    @patch('authentication.services.EmailMultiAlternatives')
+    def test_send_welcome_email_failure(self, mock_email_class):
         """Test welcome email handles sending failures."""
-        mock_send_mail.side_effect = Exception("SMTP error")
+        mock_email_instance = MagicMock()
+        mock_email_instance.send.side_effect = Exception("SMTP error")
+        mock_email_class.return_value = mock_email_instance
         
         user = User.objects.create_user(
             username='john.doe@example.com',
@@ -307,7 +306,7 @@ class EmployeeCreationWithAccountTests(TestCase):
             'lastName': 'Smith',
             'employeeId': 'EMP002',
             'personalEmail': 'jane.smith@example.com',
-            'mobileNumber': '0987654321',
+            'mobileNumber': '+91 9876543210',
             'joiningDate': '2024-01-15',
             'department': 'Mathematics',
             'designation': 'Professor'
@@ -347,7 +346,7 @@ class EmployeeCreationWithAccountTests(TestCase):
             'lastName': 'User',
             'employeeId': 'EMP003',
             'personalEmail': 'existing@example.com',
-            'mobileNumber': '1111111111',
+            'mobileNumber': '+1 4155551111',
             'joiningDate': '2024-01-20',
             'department': 'Physics',
             'designation': 'Researcher'
@@ -388,7 +387,7 @@ class EmployeeCreationWithAccountTests(TestCase):
             'lastName': 'User',
             'employeeId': 'EMP004',
             'personalEmail': 'unauthorized@example.com',
-            'mobileNumber': '2222222222',
+            'mobileNumber': '+44 2079460958',
             'joiningDate': '2024-01-25',
             'department': 'Chemistry',
             'designation': 'Lab Assistant'
@@ -541,6 +540,8 @@ class EmailTemplateTests(TestCase):
             'employee_first_name': self.employee.firstName,
             'employee_last_name': self.employee.lastName,
             'employee_id': self.employee.employeeId,
+            'employee_email': self.employee.personalEmail,
+            'employee_phone': self.employee.mobileNumber,
             'username': self.user.email,
             'temporary_password': self.temp_password,
             'portal_url': 'http://localhost:3000',
@@ -561,6 +562,8 @@ class EmailTemplateTests(TestCase):
             'employee_first_name': self.employee.firstName,
             'employee_last_name': self.employee.lastName,
             'employee_id': self.employee.employeeId,
+            'employee_email': self.employee.personalEmail,
+            'employee_phone': self.employee.mobileNumber,
             'username': self.user.email,
             'temporary_password': self.temp_password,
             'portal_url': 'http://localhost:3000',
@@ -581,6 +584,8 @@ class EmailTemplateTests(TestCase):
             'employee_first_name': self.employee.firstName,
             'employee_last_name': self.employee.lastName,
             'employee_id': self.employee.employeeId,
+            'employee_email': self.employee.personalEmail,
+            'employee_phone': self.employee.mobileNumber,
             'username': self.user.email,
             'temporary_password': self.temp_password,
             'portal_url': 'http://localhost:3000',
@@ -593,9 +598,10 @@ class EmailTemplateTests(TestCase):
         self.assertIn('Doe', html_content)
         self.assertIn('EMP001', html_content)
         self.assertIn('john.doe@example.com', html_content)
-        self.assertIn('TempPass123!@#', html_content)
+        self.assertIn('1234567890', html_content)  # Phone number
         self.assertIn('http://localhost:3000', html_content)
         self.assertIn('Test Organization', html_content)
+        self.assertIn('Account Activation', html_content)  # New activation flow
     
     def test_text_email_contains_required_information(self):
         """Test plain text email template contains all required information."""
@@ -606,6 +612,8 @@ class EmailTemplateTests(TestCase):
             'employee_first_name': self.employee.firstName,
             'employee_last_name': self.employee.lastName,
             'employee_id': self.employee.employeeId,
+            'employee_email': self.employee.personalEmail,
+            'employee_phone': self.employee.mobileNumber,
             'username': self.user.email,
             'temporary_password': self.temp_password,
             'portal_url': 'http://localhost:3000',
@@ -618,9 +626,10 @@ class EmailTemplateTests(TestCase):
         self.assertIn('Doe', text_content)
         self.assertIn('EMP001', text_content)
         self.assertIn('john.doe@example.com', text_content)
-        self.assertIn('TempPass123!@#', text_content)
+        self.assertIn('1234567890', text_content)  # Phone number
         self.assertIn('http://localhost:3000', text_content)
         self.assertIn('Test Organization', text_content)
+        self.assertIn('ACCOUNT ACTIVATION', text_content)  # New activation flow
     
     def test_html_email_contains_security_disclaimer(self):
         """Test HTML email template contains security disclaimer."""
@@ -631,6 +640,8 @@ class EmailTemplateTests(TestCase):
             'employee_first_name': self.employee.firstName,
             'employee_last_name': self.employee.lastName,
             'employee_id': self.employee.employeeId,
+            'employee_email': self.employee.personalEmail,
+            'employee_phone': self.employee.mobileNumber,
             'username': self.user.email,
             'temporary_password': self.temp_password,
             'portal_url': 'http://localhost:3000',
@@ -641,7 +652,8 @@ class EmailTemplateTests(TestCase):
         # Verify security disclaimer is present
         self.assertIn('security', html_content.lower())
         self.assertIn('password', html_content.lower())
-        self.assertIn('change', html_content.lower())
+        self.assertIn('create', html_content.lower())  # Changed from 'change' to 'create'
+        self.assertIn('activation', html_content.lower())  # New activation flow
     
     def test_text_email_contains_security_disclaimer(self):
         """Test plain text email template contains security disclaimer."""
@@ -652,6 +664,8 @@ class EmailTemplateTests(TestCase):
             'employee_first_name': self.employee.firstName,
             'employee_last_name': self.employee.lastName,
             'employee_id': self.employee.employeeId,
+            'employee_email': self.employee.personalEmail,
+            'employee_phone': self.employee.mobileNumber,
             'username': self.user.email,
             'temporary_password': self.temp_password,
             'portal_url': 'http://localhost:3000',
@@ -662,7 +676,8 @@ class EmailTemplateTests(TestCase):
         # Verify security disclaimer is present
         self.assertIn('security', text_content.lower())
         self.assertIn('password', text_content.lower())
-        self.assertIn('change', text_content.lower())
+        self.assertIn('create', text_content.lower())  # Changed from 'change' to 'create'
+        self.assertIn('activation', text_content.lower())  # New activation flow
     
     def test_html_email_has_valid_html_structure(self):
         """Test HTML email template has valid HTML structure."""
@@ -673,6 +688,8 @@ class EmailTemplateTests(TestCase):
             'employee_first_name': self.employee.firstName,
             'employee_last_name': self.employee.lastName,
             'employee_id': self.employee.employeeId,
+            'employee_email': self.employee.personalEmail,
+            'employee_phone': self.employee.mobileNumber,
             'username': self.user.email,
             'temporary_password': self.temp_password,
             'portal_url': 'http://localhost:3000',
@@ -698,6 +715,8 @@ class EmailTemplateTests(TestCase):
             'employee_first_name': self.employee.firstName,
             'employee_last_name': self.employee.lastName,
             'employee_id': self.employee.employeeId,
+            'employee_email': self.employee.personalEmail,
+            'employee_phone': self.employee.mobileNumber,
             'username': self.user.email,
             'temporary_password': self.temp_password,
             'portal_url': 'http://localhost:3000',

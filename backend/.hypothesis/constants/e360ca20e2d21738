@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/exceptions.py
+# hypothesis_version: 6.141.1
+
+[403, 'Department Head', 'PermissionDenied', 'detail', 'error_type', 'message', 'permission_classes', 'request', 'required_permissions', 'required_roles', 'status_code', 'user_department', 'user_roles', 'view']

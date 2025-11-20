@@ -58,6 +58,12 @@ import AuditLogPage from "./pages/AuditLogPage";
 // First Login Password Change
 import FirstLoginPasswordChange from "./pages/FirstLoginPasswordChange";
 
+// Employee Onboarding
+import PhoneAuthenticationPage from "./pages/PhoneAuthenticationPage";
+import AccountSetupPage from "./pages/AccountSetupPage";
+import PasswordSetupPage from "./pages/PasswordSetupPage";
+import OnboardingRouteGuard from "./components/OnboardingRouteGuard";
+
 function App() {
   return (
     <PermissionProvider>
@@ -67,6 +73,32 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<LoginPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          
+          {/* Employee Onboarding - Public routes with flow guards */}
+          <Route 
+            path="/phone-auth" 
+            element={
+              <OnboardingRouteGuard requiredStep="phone-auth">
+                <PhoneAuthenticationPage />
+              </OnboardingRouteGuard>
+            } 
+          />
+          <Route 
+            path="/account-setup" 
+            element={
+              <OnboardingRouteGuard requiredStep="account-setup">
+                <AccountSetupPage />
+              </OnboardingRouteGuard>
+            } 
+          />
+          <Route 
+            path="/password-setup" 
+            element={
+              <OnboardingRouteGuard requiredStep="password-setup">
+                <PasswordSetupPage />
+              </OnboardingRouteGuard>
+            } 
+          />
 
           {/* First Login Password Change - Protected but without Layout */}
           <Route element={<ProtectedRoute />}>

@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/leave_management/migrations/0003_holiday_leavebalance.py
+# hypothesis_version: 6.141.1
+
+[255, 'Casual', 'Casual Leave', 'Holiday', 'Holidays', 'ID', 'Leave Balance', 'Leave Balances', 'Leave days used', 'LeaveBalance', 'Sick', 'Sick Leave', 'Vacation', 'Vacation Leave', 'date', 'description', 'employee', 'employee_management', 'id', 'leave_balances', 'leave_management', 'leave_type', 'name', 'ordering', 'total', 'unique_together', 'used', 'verbose_name', 'verbose_name_plural']

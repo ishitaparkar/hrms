@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/employee_management/models.py
+# hypothesis_version: 6.141.1
+
+[100, 200, 255, 1024, '-upload_date', 'Active', 'Can manage employees', 'Certificates', 'Employee Document', 'Employee Documents', 'Employment', 'Expired', 'File size in bytes', 'Pending', 'Personal', 'Verified', 'doc', 'documents', 'docx', 'jpeg', 'jpg', 'manage_employees', 'pdf', 'png', 'self', 'subordinates', 'uploaded_documents', 'view_all_employees']

@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/leave_management/serializers.py
+# hypothesis_version: 6.141.1
+
+['date', 'days', 'description', 'employee', 'employee_id', 'end_date', 'id', 'leave_type', 'name', 'reason', 'remaining', 'start_date', 'status', 'total', 'used']

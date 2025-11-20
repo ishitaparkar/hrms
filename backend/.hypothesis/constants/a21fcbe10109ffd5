@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/migrations/0004_userprofile_password_changed.py
+# hypothesis_version: 6.141.1
+
+['UserProfile', 'authentication', 'password_changed', 'userprofile']

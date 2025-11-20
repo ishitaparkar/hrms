@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/management/commands/expire_roles.py
+# hypothesis_version: 6.141.1
+
+['--dry-run', 'Automatic expiration', 'ROLE_REVOKED', 'RoleAssignment', 'assigned_at', 'assigned_by', 'dry_run', 'expired_at', 'notes', 'reason', 'role', 'role_name', 'store_true', 'user']

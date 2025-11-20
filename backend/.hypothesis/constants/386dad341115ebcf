@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/models.py
+# hypothesis_version: 6.141.1
+
+[100, 150, 255, '-assigned_at', '-attempt_time', '-created_at', '-timestamp', 'ACCESS_DENIED', 'Access Denied', 'Account Setup Token', 'Account Setup Tokens', 'Active', 'Audit Log', 'Audit Logs', 'Completed', 'Dark', 'Expired', 'Failed', 'Light', 'PERMISSION_CHANGED', 'Password Setup', 'Permission Changed', 'Phone Auth Attempt', 'Phone Auth Attempts', 'Phone Authentication', 'ROLE_ASSIGNED', 'ROLE_REVOKED', 'Role Assigned', 'Role Assignment', 'Role Assignments', 'Role Revoked', 'Success', 'System Default', 'UTC', 'Used', 'User Preferences', 'User Profile', 'User Profiles', 'Username Generation', 'assigned_roles', 'audit_actions', 'audit_targets', 'completed', 'dark', 'email', 'en', 'light', 'password_setup', 'phone_auth', 'preferences', 'profile', 'role_assignments', 'setup_tokens', 'system', 'user_profile', 'username_generation']

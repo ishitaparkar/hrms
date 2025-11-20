@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/performance_management/admin.py
+# hypothesis_version: 6.141.1
+
+['awarded_by', 'certificate_issued', 'completion_date', 'course_name', 'date', 'employee', 'employee__employeeId', 'employee__firstName', 'employee__lastName', 'period_end', 'period_start', 'provider', 'rating', 'reviewer', 'status', 'target_date', 'title']

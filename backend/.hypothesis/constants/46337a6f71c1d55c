@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/urls.py
+# hypothesis_version: 6.141.1
+
+['assign-role', 'audit-log-list', 'audit-logs/', 'auth-token', 'current-user', 'login/', 'me/', 'preferences/', 'revoke-role', 'role-list-create', 'roles/', 'user-list', 'user-preferences', 'user-roles', 'users/']

@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/leave_management/admin.py
+# hypothesis_version: 6.141.1
+
+['Remaining', 'date', 'description', 'employee', 'employee__firstName', 'employee__lastName', 'end_date', 'get_remaining', 'id', 'leave_type', 'name', 'reason', 'start_date', 'status', 'total', 'used']

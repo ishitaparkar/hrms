@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/employee_management/migrations/0004_employee_emergencycontactemail_and_more.py
+# hypothesis_version: 6.141.1
+
+[100, 200, 'Active', 'emergencyContactName', 'employee', 'employee_management', 'employmentStatus', 'officeLocation', 'preferredName', 'profilePhoto', 'reportingManager', 'schoolFaculty', 'subordinates', 'workEmail', 'workPhone']

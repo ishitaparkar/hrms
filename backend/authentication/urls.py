@@ -3,7 +3,8 @@ from .views import (
     CustomAuthToken, CurrentUserView, FirstTimePasswordChangeView,
     RoleListCreateAPIView, RoleAssignmentAPIView,
     RoleRevocationAPIView, UserListAPIView, UserRolesListAPIView,
-    AuditLogListAPIView, UserPreferencesAPIView
+    AuditLogListAPIView, UserPreferencesAPIView, PhoneAuthenticationView,
+    UsernameGenerationView, AccountSetupView, ResendWelcomeEmailView
 )
 
 urlpatterns = [
@@ -12,6 +13,9 @@ urlpatterns = [
     path('me/', CurrentUserView.as_view(), name='current-user'),
     path('first-login-password-change/', FirstTimePasswordChangeView.as_view(), name='first-login-password-change'),
     path('preferences/', UserPreferencesAPIView.as_view(), name='user-preferences'),
+    path('verify-phone/', PhoneAuthenticationView.as_view(), name='verify-phone'),
+    path('generate-username/', UsernameGenerationView.as_view(), name='generate-username'),
+    path('complete-setup/', AccountSetupView.as_view(), name='complete-setup'),
     
     # Role management endpoints
     path('roles/', RoleListCreateAPIView.as_view(), name='role-list-create'),
@@ -22,4 +26,7 @@ urlpatterns = [
     
     # Audit log endpoints
     path('audit-logs/', AuditLogListAPIView.as_view(), name='audit-log-list'),
+    
+    # Employee onboarding endpoints
+    path('resend-welcome-email/<int:employee_id>/', ResendWelcomeEmailView.as_view(), name='resend-welcome-email'),
 ]

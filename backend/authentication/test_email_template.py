@@ -19,6 +19,8 @@ def test_email_template_rendering():
         'employee_first_name': 'John',
         'employee_last_name': 'Doe',
         'employee_id': 'EMP001',
+        'employee_email': 'john.doe@acme.com',
+        'employee_phone': '+14155552671',
         'username': 'john.doe@acme.com',
         'temporary_password': 'TempPass123!',
         'portal_url': 'http://localhost:3000',
@@ -39,10 +41,11 @@ def test_email_template_rendering():
             context['employee_first_name'],
             context['employee_last_name'],
             context['employee_id'],
-            context['username'],
-            context['temporary_password'],
+            context['employee_email'],
+            context['employee_phone'],
             context['portal_url'],
             'Security Information',
+            'Account Activation',
         ]
         
         missing_elements = []

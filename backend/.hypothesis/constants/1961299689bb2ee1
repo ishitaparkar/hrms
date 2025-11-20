@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/employee_management/admin.py
+# hypothesis_version: 6.141.1
+
+[1024.0, '-upload_date', 'B', 'Document Information', 'Employment Details', 'File Size', 'GB', 'KB', 'MB', 'Metadata', 'Personal Information', 'category', 'classes', 'collapse', 'department', 'designation', 'employee', 'employeeId', 'employee__employeeId', 'employee__firstName', 'employee__lastName', 'fields', 'file', 'file_size', 'file_size_display', 'file_type', 'firstName', 'joiningDate', 'lastName', 'mobileNumber', 'name', 'personalEmail', 'status', 'upload_date', 'uploaded_by']

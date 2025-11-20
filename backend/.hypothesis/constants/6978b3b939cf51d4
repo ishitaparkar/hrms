@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/services.py
+# hypothesis_version: 6.141.1
+
+['!@#$%^&*', 'ACCESS_DENIED', 'DEFAULT_FROM_EMAIL', 'Email not found', 'HRMS', 'HS256', 'HTTP_USER_AGENT', 'ORGANIZATION_NAME', 'PORTAL_URL', 'PhoneAuthentication', 'ROLE_ASSIGNED', 'SECRET_KEY', 'UserAccount', 'account_creation', 'action_type', 'department', 'email', 'email_error', 'email_sent', 'employee', 'employee_email', 'employee_first_name', 'employee_id', 'employee_last_name', 'employee_name', 'employee_phone', 'exp', 'failed_attempts', 'iat', 'noreply@hrms.com', 'organization_name', 'portal_url', 'reason', 'role_assigned', 'temporary_password', 'text/html', 'token_id', 'user', 'user_profile', 'username']

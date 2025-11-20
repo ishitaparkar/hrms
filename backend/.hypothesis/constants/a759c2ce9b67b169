@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/migrations/0005_userpreferences.py
+# hypothesis_version: 6.141.1
+
+['Dark', 'ID', 'Light', 'System Default', 'UTC', 'User Preferences', 'UserPreferences', 'authentication', 'dark', 'email_notifications', 'en', 'id', 'language', 'light', 'preferences', 'push_notifications', 'sms_notifications', 'system', 'theme', 'timezone', 'updated_at', 'user', 'verbose_name', 'verbose_name_plural']

@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/attendance_leave/admin.py
+# hypothesis_version: 6.141.1
+
+['-date', 'Attendance Details', 'Employee Information', 'check_in', 'check_out', 'classes', 'collapse', 'created_at', 'date', 'employee', 'employee__department', 'employee__employeeId', 'employee__firstName', 'employee__lastName', 'fields', 'notes', 'status', 'updated_at', 'work_hours']

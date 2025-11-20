@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/employee_management/views.py
+# hypothesis_version: 6.141.1
+
+['Certificates', 'Content-Disposition', 'EMPLOYEE_CREATED', 'Employee', 'Employee not found.', 'Employment', 'Manager', 'Personal', 'account_creation', 'can_manage', 'category', 'department', 'designation', 'documents', 'email', 'employee_id', 'error', 'error_message', 'firstName', 'first_name', 'lastName', 'last_name', 'manager', 'message', 'name', 'profile', 'rb', 'request', 'team_member_count', 'team_members', 'user_account_created', 'user_roles', 'username', 'warning']

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import PhoneInput from '../components/ui/PhoneInput';
 
 const SectionTitle = ({ title }) => (
   <h2 className="text-lg font-semibold text-primary mb-6 col-span-full">{title}</h2>
@@ -44,6 +45,7 @@ const AddEmployeePage = () => {
     lastName: '',
     personalEmail: '',
     mobileNumber: '',
+    countryCode: '+91',
     gender: 'Male',
     employeeId: '',
     officialEmail: '',
@@ -63,6 +65,11 @@ const AddEmployeePage = () => {
     maritalStatus: 'Single',
     presentAddress: '',
     permanentAddress: '',
+  });
+
+  const [validationErrors, setValidationErrors] = useState({
+    personalEmail: '',
+    mobileNumber: '',
   });
 
   const designationOptions = {
@@ -100,29 +107,132 @@ const AddEmployeePage = () => {
     ],
   };
 
+  // Email validation function (RFC 5322 compliant)
+  const validateEmail = (email) => {
+    if (!email) return true; // Empty is valid if not required
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Phone validation function
+  const validatePhone = (phone, countryCode) => {
+    if (!phone) return true; // Empty is valid if not required
+    
+    // Remove formatting characters
+    const digits = phone.replace(/\D/g, '');
+    
+    // Check length (10-15 digits)
+    if (digits.length < 10 || digits.length > 15) {
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Update form data
     if (name === 'department') {
       setFormData({ ...formData, department: value, designation: '' });
     } else {
       setFormData({ ...formData, [name]: value });
     }
+
+    // Real-time validation
+    if (name === 'personalEmail') {
+      if (value && !validateEmail(value)) {
+        setValidationErrors({
+          ...validationErrors,
+          personalEmail: 'Please enter a valid email address (e.g., user@example.com)',
+        });
+      } else {
+        setValidationErrors({
+          ...validationErrors,
+          personalEmail: '',
+        });
+      }
+    }
+
+    if (name === 'mobileNumber') {
+      if (value && !validatePhone(value, formData.countryCode)) {
+        setValidationErrors({
+          ...validationErrors,
+          mobileNumber: 'Phone number must be between 10 and 15 digits',
+        });
+      } else {
+        setValidationErrors({
+          ...validationErrors,
+          mobileNumber: '',
+        });
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate before submission
+    const errors = {};
+    
+    if (!validateEmail(formData.personalEmail)) {
+      errors.personalEmail = 'Please enter a valid email address (e.g., user@example.com)';
+    }
+    
+    if (!validatePhone(formData.mobileNumber, formData.countryCode)) {
+      errors.mobileNumber = 'Phone number must be between 10 and 15 digits';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
     console.log('Submitting form data:', formData);
+    
     try {
-      await axios.post('http://127.0.0.1:8000/api/employees/', formData);
+      // Combine country code and phone number for submission
+      // Add space after country code to satisfy backend validation
+      const submissionData = {
+        ...formData,
+        mobileNumber: formData.countryCode + ' ' + formData.mobileNumber.replace(/\D/g, ''),
+      };
+      
+      await axios.post('http://127.0.0.1:8000/api/employees/', submissionData);
       alert('Employee added successfully!');
       navigate('/employees');
     } catch (error) {
       console.error('Error adding employee:', error);
-      alert(
-        `Failed to add staff member: ${
-          error.response?.data ? JSON.stringify(error.response.data) : error.message
-        }`
-      );
+      
+      // Handle validation errors from backend
+      if (error.response?.data) {
+        const backendErrors = {};
+        const data = error.response.data;
+        
+        if (data.personalEmail) {
+          backendErrors.personalEmail = Array.isArray(data.personalEmail) 
+            ? data.personalEmail[0] 
+            : data.personalEmail;
+        }
+        
+        if (data.mobileNumber) {
+          backendErrors.mobileNumber = Array.isArray(data.mobileNumber) 
+            ? data.mobileNumber[0] 
+            : data.mobileNumber;
+        }
+        
+        if (Object.keys(backendErrors).length > 0) {
+          setValidationErrors(backendErrors);
+        }
+        
+        alert(
+          `Failed to add staff member: ${
+            JSON.stringify(data)
+          }`
+        );
+      } else {
+        alert(`Failed to add staff member: ${error.message}`);
+      }
     }
   };
 
@@ -192,37 +302,43 @@ const AddEmployeePage = () => {
               </div>
             </div>
 
-            <FormInput
-              label="Personal Email *"
-              name="personalEmail"
-              type="email"
-              value={formData.personalEmail}
-              onChange={handleChange}
-              required
-            />
-
             <div>
               <label
-                htmlFor="mobileNumber"
+                htmlFor="personalEmail"
                 className="block text-sm font-medium text-subtext-light mb-1"
               >
-                Mobile Number *
+                Personal Email *
               </label>
-              <div className="flex">
-                <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-border-light bg-gray-50 text-subtext-light text-sm">
-                  +91
-                </span>
-                <input
-                  id="mobileNumber"
-                  name="mobileNumber"
-                  value={formData.mobileNumber}
-                  onChange={handleChange}
-                  className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md bg-background-light dark:bg-gray-800 border border-border-light"
-                  type="text"
-                  required
-                />
-              </div>
+              <input
+                id="personalEmail"
+                name="personalEmail"
+                type="email"
+                value={formData.personalEmail}
+                onChange={handleChange}
+                required
+                className={`w-full bg-background-light dark:bg-gray-800 border rounded-md shadow-sm px-3 py-2 ${
+                  validationErrors.personalEmail
+                    ? 'border-red-500 focus:ring-red-500'
+                    : 'border-border-light'
+                }`}
+              />
+              {validationErrors.personalEmail && (
+                <p className="mt-1 text-sm text-red-500">
+                  {validationErrors.personalEmail}
+                </p>
+              )}
             </div>
+
+            <PhoneInput
+              label="Mobile Number"
+              name="mobileNumber"
+              value={formData.mobileNumber}
+              onChange={handleChange}
+              countryCode={formData.countryCode}
+              onCountryCodeChange={handleChange}
+              required
+              error={validationErrors.mobileNumber}
+            />
           </div>
 
           {/* ===== WORK INFORMATION ===== */}

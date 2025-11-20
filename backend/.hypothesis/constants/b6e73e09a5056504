@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/leave_management/models.py
+# hypothesis_version: 6.141.1
+
+[255, 'Approved', 'Casual', 'Casual Leave', 'Denied', 'Holiday', 'Holidays', 'Leave Balance', 'Leave Balances', 'Leave days used', 'Pending', 'Sick', 'Sick Leave', 'Vacation', 'Vacation Leave', 'approve_leaves', 'date', 'employee', 'leave_balances', 'leave_type', 'manage_own_leaves', 'view_all_leaves']

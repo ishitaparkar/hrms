@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/serializers.py
+# hypothesis_version: 6.141.1
+
+[500, '+', '-', 'Invalid timezone.', 'action', 'actor', 'actor.username', 'actor_username', 'assigned_at', 'assigned_by', 'assigned_by.username', 'assigned_by_username', 'codename', 'content_type', 'dark', 'details', 'email', 'email_notifications', 'expires_at', 'first_name', 'id', 'ip_address', 'is_active', 'is_temporary', 'language', 'last_name', 'light', 'name', 'notes', 'permission_count', 'permission_ids', 'permissions', 'push_notifications', 'resource_id', 'resource_type', 'role', 'role.name', 'role_name', 'roles', 'sms_notifications', 'system', 'target_user', 'target_user.username', 'target_user_username', 'theme', 'timestamp', 'timezone', 'updated_at', 'user', 'user.username', 'user_username', 'username']

@@ -7,11 +7,13 @@ from rest_framework import status, generics
 from django.contrib.auth.models import User, Group
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from .models import RoleAssignment, AuditLog, UserPreferences
+from django.conf import settings
+from django.db import transaction
+from .models import RoleAssignment, AuditLog, UserPreferences, AccountSetupToken, UserProfile
 from .serializers import (
     RoleSerializer, RoleCreateSerializer, RoleAssignmentSerializer,
     RoleAssignmentCreateSerializer, RoleRevocationSerializer,
-    UserRoleSerializer, UserPreferencesSerializer
+    UserRoleSerializer, UserPreferencesSerializer, PhoneAuthenticationSerializer
 )
 from .permissions import IsSuperAdmin, get_client_ip
 
@@ -644,3 +646,614 @@ class UserPreferencesAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PhoneAuthenticationView(APIView):
+    """
+    API endpoint for phone-based authentication during employee onboarding.
+    
+    POST /api/auth/verify-phone/
+    
+    This endpoint verifies an employee's identity using their email and phone number.
+    On successful verification, it returns an authentication token for the account setup flow.
+    
+    Rate limiting: Maximum 3 failed attempts per hour per email address.
+    After 3 failed attempts, the account is temporarily locked.
+    """
+    permission_classes = []  # No authentication required for this endpoint
+    throttle_scope = 'phone_auth'
+    
+    def post(self, request):
+        """
+        Verify phone number and return authentication token.
+        
+        Request body:
+        {
+            "email": "employee@example.com",
+            "phone_number": "+919876543210"
+        }
+        
+        Response (success):
+        {
+            "success": true,
+            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+            "employee": {
+                "first_name": "John",
+                "last_name": "Doe",
+                "email": "john.doe@example.com",
+                "department": "Engineering"
+            }
+        }
+        
+        Response (failure):
+        {
+            "success": false,
+            "error": "Phone number does not match our records",
+            "attempts_remaining": 2
+        }
+        """
+        from .services import PhoneAuthenticationService
+        
+        # Validate request data
+        serializer = PhoneAuthenticationSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Invalid request data',
+                    'errors': serializer.errors
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        email = serializer.validated_data['email']
+        phone_number = serializer.validated_data['phone_number']
+        
+        # Verify phone number
+        success, employee, error_message = PhoneAuthenticationService.verify_phone_number(
+            email=email,
+            phone_number=phone_number,
+            request=request
+        )
+        
+        if not success:
+            # Get remaining attempts
+            failed_count = PhoneAuthenticationService.increment_failed_attempts(email)
+            attempts_remaining = max(0, PhoneAuthenticationService.MAX_FAILED_ATTEMPTS - failed_count)
+            
+            return Response(
+                {
+                    'success': False,
+                    'error': error_message,
+                    'attempts_remaining': attempts_remaining
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        # Generate authentication token
+        auth_token = PhoneAuthenticationService.generate_auth_token(employee)
+        
+        # Return success response with token and employee details
+        return Response(
+            {
+                'success': True,
+                'auth_token': auth_token,
+                'employee': {
+                    'first_name': employee.firstName,
+                    'last_name': employee.lastName,
+                    'email': employee.personalEmail,
+                    'department': employee.department,
+                    'designation': employee.designation
+                }
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class UsernameGenerationView(APIView):
+    """
+    API endpoint for generating username during employee onboarding.
+    
+    POST /api/auth/generate-username/
+    
+    This endpoint generates a unique username from the employee's name
+    and returns employee details for verification.
+    
+    Requires JWT token authentication from phone verification step.
+    """
+    permission_classes = []  # Custom JWT authentication
+    
+    def post(self, request):
+        """
+        Generate username and return employee details.
+        
+        Headers:
+            Authorization: Bearer <jwt_token>
+        
+        Response (success):
+        {
+            "username": "john.doe",
+            "employee_details": {
+                "first_name": "John",
+                "last_name": "Doe",
+                "email": "john.doe@example.com",
+                "department": "Engineering",
+                "designation": "Software Engineer"
+            }
+        }
+        
+        Response (error):
+        {
+            "error": "Invalid or expired token"
+        }
+        """
+        import jwt
+        from employee_management.models import Employee
+        from .services import UsernameGenerationService
+        
+        # Extract JWT token from Authorization header
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        if not auth_header.startswith('Bearer '):
+            return Response(
+                {'error': 'Authorization header missing or invalid'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        token = auth_header.split(' ')[1]
+        
+        # Verify and decode JWT token
+        try:
+            secret_key = getattr(settings, 'SECRET_KEY')
+            payload = jwt.decode(token, secret_key, algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            return Response(
+                {'error': 'Token has expired'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        except jwt.InvalidTokenError:
+            return Response(
+                {'error': 'Invalid token'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        # Extract employee ID from token
+        employee_id = payload.get('employee_id')
+        if not employee_id:
+            return Response(
+                {'error': 'Invalid token payload'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        # Get employee from database
+        try:
+            employee = Employee.objects.get(id=employee_id)
+        except Employee.DoesNotExist:
+            return Response(
+                {'error': 'Employee not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Generate username
+        username = UsernameGenerationService.generate_username(
+            employee.firstName,
+            employee.lastName
+        )
+        
+        # Return username and employee details
+        return Response(
+            {
+                'username': username,
+                'employee_details': {
+                    'first_name': employee.firstName,
+                    'last_name': employee.lastName,
+                    'email': employee.personalEmail,
+                    'department': employee.department,
+                    'designation': employee.designation
+                }
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+class AccountSetupView(APIView):
+    """
+    API endpoint for completing account setup during employee onboarding.
+    
+    POST /api/auth/complete-setup/
+    
+    This endpoint completes the account activation process by:
+    1. Validating the username and password
+    2. Creating the User account with hashed password
+    3. Updating the password_changed flag
+    4. Creating an authenticated session
+    5. Marking the setup token as used
+    6. Creating audit log entries
+    
+    Requires JWT token authentication from phone verification step.
+    """
+    permission_classes = []  # Custom JWT authentication
+    
+    def post(self, request):
+        """
+        Complete account setup with username and password.
+        
+        Headers:
+            Authorization: Bearer <jwt_token>
+        
+        Request body:
+        {
+            "username": "john.doe",
+            "password": "SecureP@ss123",
+            "confirm_password": "SecureP@ss123"
+        }
+        
+        Response (success):
+        {
+            "success": true,
+            "message": "Account activated successfully",
+            "user": {
+                "id": 123,
+                "username": "john.doe",
+                "email": "john.doe@example.com",
+                "full_name": "John Doe"
+            },
+            "token": "a1b2c3d4e5f6..."
+        }
+        
+        Response (validation error):
+        {
+            "success": false,
+            "errors": {
+                "password": [
+                    "Password must contain at least one uppercase letter"
+                ]
+            }
+        }
+        """
+        import jwt
+        from employee_management.models import Employee
+        from .services import PasswordValidationService
+        from .utils import audit_log
+        from rest_framework.authtoken.models import Token
+        
+        # Extract JWT token from Authorization header
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        if not auth_header.startswith('Bearer '):
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Authorization header missing or invalid'
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        token_string = auth_header.split(' ')[1]
+        
+        # Verify and decode JWT token
+        try:
+            secret_key = getattr(settings, 'SECRET_KEY')
+            payload = jwt.decode(token_string, secret_key, algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Token has expired'
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        except jwt.InvalidTokenError:
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Invalid token'
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        # Extract employee ID and token ID from token
+        employee_id = payload.get('employee_id')
+        token_id = payload.get('token_id')
+        
+        if not employee_id or not token_id:
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Invalid token payload'
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        # Get employee from database
+        try:
+            employee = Employee.objects.get(id=employee_id)
+        except Employee.DoesNotExist:
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Employee not found'
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Verify setup token exists and is not used
+        try:
+            setup_token = AccountSetupToken.objects.get(id=token_id, employee=employee)
+            if setup_token.used:
+                return Response(
+                    {
+                        'success': False,
+                        'error': 'Setup token has already been used'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            if setup_token.expires_at < timezone.now():
+                return Response(
+                    {
+                        'success': False,
+                        'error': 'Setup token has expired'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except AccountSetupToken.DoesNotExist:
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Invalid setup token'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Get request data
+        username = request.data.get('username')
+        password = request.data.get('password')
+        confirm_password = request.data.get('confirm_password')
+        
+        # Validate required fields
+        if not username or not password or not confirm_password:
+            return Response(
+                {
+                    'success': False,
+                    'errors': {
+                        'general': ['Username, password, and confirm_password are required']
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Validate passwords match
+        if password != confirm_password:
+            return Response(
+                {
+                    'success': False,
+                    'errors': {
+                        'confirm_password': ['Passwords do not match']
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Validate password strength
+        is_valid, password_errors = PasswordValidationService.validate_password_strength(password)
+        if not is_valid:
+            return Response(
+                {
+                    'success': False,
+                    'errors': {
+                        'password': password_errors
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check if username already exists
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {
+                    'success': False,
+                    'errors': {
+                        'username': ['Username already exists']
+                    }
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Create User account with hashed password
+        try:
+            with transaction.atomic():
+                # Create user
+                user = User.objects.create_user(
+                    username=username,
+                    email=employee.personalEmail,
+                    first_name=employee.firstName,
+                    last_name=employee.lastName,
+                    password=password  # Django automatically hashes this
+                )
+                
+                # Create or update UserProfile
+                user_profile, _ = UserProfile.objects.get_or_create(
+                    user=user,
+                    defaults={
+                        'employee': employee,
+                        'department': employee.department,
+                        'password_changed': True  # Mark as activated
+                    }
+                )
+                
+                # If profile already existed, update it
+                if not _:
+                    user_profile.employee = employee
+                    user_profile.department = employee.department
+                    user_profile.password_changed = True
+                    user_profile.save()
+                
+                # Assign default Employee role
+                from .utils import ensure_role_exists, ROLE_EMPLOYEE
+                employee_role, role_created = ensure_role_exists(ROLE_EMPLOYEE)
+                user.groups.add(employee_role)
+                
+                # Mark setup token as used
+                setup_token.used = True
+                setup_token.used_at = timezone.now()
+                setup_token.save()
+                
+                # Create authentication token for automatic login
+                auth_token, _ = Token.objects.get_or_create(user=user)
+                
+                # Create audit log for account activation
+                audit_log(
+                    action='ROLE_ASSIGNED',
+                    actor=None,
+                    request=request,
+                    target_user=user,
+                    resource_type='AccountActivation',
+                    resource_id=user.id,
+                    details={
+                        'action_type': 'account_activation_completed',
+                        'employee_id': employee.employeeId,
+                        'employee_name': f"{employee.firstName} {employee.lastName}",
+                        'username': username,
+                        'email': employee.personalEmail,
+                    }
+                )
+                
+                # Extract roles and permissions
+                roles = [group.name for group in user.groups.all()]
+                permissions = list(user.get_all_permissions())
+                
+                # Return success response with user data, roles, and token
+                return Response(
+                    {
+                        'success': True,
+                        'message': 'Account activated successfully',
+                        'user': {
+                            'id': user.id,
+                            'username': user.username,
+                            'email': user.email,
+                            'full_name': f"{user.first_name} {user.last_name}",
+                            'employee_id': employee.id,
+                            'department': employee.department
+                        },
+                        'roles': roles,
+                        'permissions': permissions,
+                        'token': auth_token.key
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+                
+        except Exception as e:
+            return Response(
+                {
+                    'success': False,
+                    'error': f'Failed to create account: {str(e)}'
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class ResendWelcomeEmailView(APIView):
+    """
+    API endpoint for Super Admins to resend welcome email to an employee.
+    
+    This is useful when:
+    - Employee didn't receive the original email
+    - Email was accidentally deleted
+    - Employee needs to restart the onboarding process
+    """
+    permission_classes = [IsAuthenticated, IsSuperAdmin]
+    
+    def post(self, request, employee_id):
+        """
+        Resend welcome email to the specified employee.
+        
+        Args:
+            employee_id: The ID of the employee to send the email to
+            
+        Returns:
+            Response with success status and message
+        """
+        from employee_management.models import Employee
+        from .services import AccountCreationService
+        from .utils import audit_log
+        
+        try:
+            # Get the employee
+            employee = get_object_or_404(Employee, id=employee_id)
+            
+            # Check if employee already has an activated account
+            has_activated_account = False
+            if hasattr(employee, 'user_profile') and employee.user_profile:
+                user_profile = employee.user_profile
+                if user_profile.user and user_profile.password_changed:
+                    has_activated_account = True
+            
+            # Send welcome email
+            try:
+                AccountCreationService.send_welcome_email_only(employee, request)
+                
+                # Create audit log
+                audit_log(
+                    action='ROLE_ASSIGNED',
+                    actor=request.user,
+                    request=request,
+                    target_user=None,
+                    resource_type='WelcomeEmail',
+                    resource_id=employee.id,
+                    details={
+                        'action_type': 'welcome_email_resent',
+                        'employee_id': employee.employeeId,
+                        'employee_name': f"{employee.firstName} {employee.lastName}",
+                        'email': employee.personalEmail,
+                        'resent_by': request.user.username,
+                        'has_activated_account': has_activated_account,
+                    }
+                )
+                
+                return Response(
+                    {
+                        'success': True,
+                        'message': f'Welcome email sent successfully to {employee.personalEmail}',
+                        'employee': {
+                            'id': employee.id,
+                            'name': f"{employee.firstName} {employee.lastName}",
+                            'email': employee.personalEmail,
+                            'has_activated_account': has_activated_account
+                        }
+                    },
+                    status=status.HTTP_200_OK
+                )
+                
+            except Exception as email_error:
+                # Log the failure
+                audit_log(
+                    action='ACCESS_DENIED',
+                    actor=request.user,
+                    request=request,
+                    target_user=None,
+                    resource_type='WelcomeEmail',
+                    resource_id=employee.id,
+                    details={
+                        'action_type': 'welcome_email_resend_failed',
+                        'employee_id': employee.employeeId,
+                        'employee_name': f"{employee.firstName} {employee.lastName}",
+                        'email': employee.personalEmail,
+                        'error': str(email_error),
+                        'resent_by': request.user.username,
+                    }
+                )
+                
+                return Response(
+                    {
+                        'success': False,
+                        'error': f'Failed to send email: {str(email_error)}'
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+                
+        except Exception as e:
+            return Response(
+                {
+                    'success': False,
+                    'error': f'Failed to resend welcome email: {str(e)}'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )

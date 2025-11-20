@@ -12,6 +12,7 @@ from authentication.permissions import IsHRManager, IsEmployee
 from authentication.utils import (
     user_has_any_role,
     get_user_department,
+    audit_log,
     ROLE_SUPER_ADMIN,
     ROLE_HR_MANAGER,
     ROLE_EMPLOYEE
@@ -50,12 +51,12 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         """
         Create employee with permission check.
-        Only HR Manager and Super Admin can create employees.
+        Only Super Admin can create employees (Requirement 8.1).
         """
         user = self.request.user
         
-        # Check if user has permission to manage employees
-        if not user_has_any_role(user, [ROLE_SUPER_ADMIN, ROLE_HR_MANAGER]):
+        # Check if user has Super Admin role
+        if not user_has_any_role(user, [ROLE_SUPER_ADMIN]):
             from rest_framework.exceptions import PermissionDenied
             raise PermissionDenied("You do not have permission to create employees.")
         
@@ -63,7 +64,7 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
     
     def create(self, request, *args, **kwargs):
         """
-        Override create to add account creation details to the response.
+        Override create to add account creation details to the response and audit logging.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -71,6 +72,23 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
         
         # Get the created employee instance
         employee = serializer.instance
+        
+        # Create audit log for employee creation (Requirement 8.3)
+        audit_log(
+            action='EMPLOYEE_CREATED',
+            actor=request.user,
+            request=request,
+            resource_type='Employee',
+            resource_id=employee.id,
+            details={
+                'employee_id': employee.employeeId,
+                'first_name': employee.firstName,
+                'last_name': employee.lastName,
+                'email': employee.personalEmail,
+                'department': employee.department,
+                'designation': employee.designation,
+            }
+        )
         
         # Prepare response data
         response_data = serializer.data

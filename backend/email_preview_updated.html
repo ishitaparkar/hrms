@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Welcome to Acme Corporation</title>
+    <style>
+        /* Reset styles for email clients */
+        body, table, td, a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        
+        /* Base styles */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100% !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        
+        /* Header */
+        .header {
+            background-color: #2563eb;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+        .message {
+            font-size: 15px;
+            margin-bottom: 25px;
+            color: #4b5563;
+        }
+        
+        /* Credentials box */
+        .credentials-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .credentials-box h2 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .credential-item {
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        .credential-label {
+            font-weight: 600;
+            color: #374151;
+            display: inline-block;
+            width: 160px;
+        }
+        .credential-value {
+            color: #1f2937;
+            font-family: 'Courier New', monospace;
+            background-color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+        }
+        
+        /* Button */
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 14px 32px;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        /* Security notice */
+        .security-notice {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .security-notice h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400e;
+        }
+        .security-notice p {
+            margin: 0;
+            font-size: 13px;
+            color: #78350f;
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #f9fafb;
+            padding: 25px 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+            .content {
+                padding: 30px 20px !important;
+            }
+            .credentials-box {
+                padding: 20px !important;
+            }
+            .credential-label {
+                display: block;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            .credential-value {
+                display: block;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f4f4f4; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="email-container">
+                    <!-- Header -->
+                    <tr>
+                        <td class="header">
+                            <h1>Welcome to Acme Corporation</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td class="content">
+                            <div class="greeting">
+                                Dear John Doe,
+                            </div>
+                            
+                            <div class="message">
+                                Welcome to Acme Corporation! Your employee account has been successfully created. We're excited to have you join our team.
+                            </div>
+                            
+                            <div class="message">
+                                To activate your account and access the HRMS portal, please follow the steps below:
+                            </div>
+                            
+                            <!-- Getting Started Section -->
+                            <div class="credentials-box">
+                                <h2>🚀 Getting Started - Account Activation</h2>
+                                <div class="message" style="margin-bottom: 15px; font-size: 14px;">
+                                    <strong>Step 1:</strong> Click the button below to access the portal<br>
+                                    <strong>Step 2:</strong> Verify your identity using your email and phone number<br>
+                                    <strong>Step 3:</strong> Review your auto-generated username<br>
+                                    <strong>Step 4:</strong> Create your secure password
+                                </div>
+                            </div>
+                            
+                            <!-- Prominent Portal URL Button -->
+                            <div class="button-container">
+                                <a href="http://localhost:3000/auth/phone-verification" class="button" style="font-size: 16px; padding: 16px 40px;">Access HRMS Portal</a>
+                            </div>
+                            
+                            <div class="message" style="text-align: center; font-size: 13px; color: #6b7280; margin-top: 10px;">
+                                Portal URL: <a href="http://localhost:3000/auth/phone-verification" style="color: #2563eb; text-decoration: none;">http://localhost:3000/auth/phone-verification</a>
+                            </div>
+                            
+                            <!-- Your Information Box -->
+                            <div class="credentials-box" style="margin-top: 30px;">
+                                <h2>📋 Your Information</h2>
+                                <div class="message" style="font-size: 14px; margin-bottom: 10px;">
+                                    You'll need this information during the activation process:
+                                </div>
+                                <div class="credential-item">
+                                    <span class="credential-label">Employee ID:</span>
+                                    <span class="credential-value">EMP001</span>
+                                </div>
+                                <div class="credential-item">
+                                    <span class="credential-label">Email Address:</span>
+                                    <span class="credential-value">john.doe@acme.com</span>
+                                </div>
+                                <div class="credential-item">
+                                    <span class="credential-label">Phone Number:</span>
+                                    <span class="credential-value">+14155552671</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Security Notice -->
+                            <div class="security-notice">
+                                <h3>🔒 Important Security Information</h3>
+                                <p style="margin-bottom: 10px;">
+                                    <strong>Account Activation Required:</strong> You must complete the activation process to access your account. During activation, you will create a secure password that meets our security requirements.
+                                </p>
+                                <p style="margin-bottom: 10px;">
+                                    <strong>Password Requirements:</strong> Your password must be at least 8 characters long and include uppercase letters, lowercase letters, numbers, and special characters.
+                                </p>
+                                <p>
+                                    <strong>Keep Your Information Secure:</strong> Never share your login credentials with anyone. If you did not expect this email or have any concerns, please contact the HR department immediately.
+                                </p>
+                            </div>
+                            
+                            <div class="message">
+                                If you have any questions or need assistance, please don't hesitate to contact the HR team.
+                            </div>
+                            
+                            <div class="message" style="margin-top: 30px;">
+                                Best regards,<br>
+                                <strong>HR Team</strong>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td class="footer">
+                            <p>This is an automated message from Acme Corporation HRMS.</p>
+                            <p>Please do not reply to this email.</p>
+                            <p style="margin-top: 15px; font-size: 12px;">
+                                © 2025 Acme Corporation. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/employee_management/migrations/0003_employeedocument.py
+# hypothesis_version: 6.141.1
+
+[255, '-upload_date', 'Certificates', 'Employee Document', 'Employee Documents', 'EmployeeDocument', 'Employment', 'Expired', 'File size in bytes', 'ID', 'Pending', 'Personal', 'Verified', 'category', 'doc', 'documents', 'docx', 'employee', 'employee_management', 'file', 'file_size', 'file_type', 'id', 'jpeg', 'jpg', 'name', 'ordering', 'pdf', 'png', 'status', 'upload_date', 'uploaded_by', 'uploaded_documents', 'verbose_name', 'verbose_name_plural']

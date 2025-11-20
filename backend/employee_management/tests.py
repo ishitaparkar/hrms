@@ -1,8 +1,11 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from .models import Employee
+from .serializers import EmployeeSerializer
 from authentication.models import UserProfile
 from datetime import date
+from rest_framework.exceptions import ValidationError as DRFValidationError
 
 
 class EmployeeModelTest(TestCase):
@@ -187,3 +190,250 @@ class MyTeamAPITest(TestCase):
         
         self.assertEqual(response.status_code, 404)
         self.assertIn('error', response.data)
+
+
+
+class EmployeeValidationTest(TestCase):
+    """Test cases for Employee model validation."""
+    
+    def setUp(self):
+        """Set up base employee data."""
+        self.valid_employee_data = {
+            'firstName': 'John',
+            'lastName': 'Doe',
+            'employeeId': 'EMP001',
+            'personalEmail': 'john.doe@example.com',
+            'mobileNumber': '+1 415-555-2671',
+            'joiningDate': date(2024, 1, 1),
+            'department': 'Engineering',
+            'designation': 'Software Engineer',
+        }
+    
+    # Email Validation Tests
+    
+    def test_valid_email_formats(self):
+        """Test that valid email formats are accepted."""
+        valid_emails = [
+            'user@example.com',
+            'john.doe@company.co.uk',
+            'test+tag@domain.com',
+            'user123@test-domain.org',
+            'first.last@subdomain.example.com',
+        ]
+        
+        for email in valid_emails:
+            data = self.valid_employee_data.copy()
+            data['personalEmail'] = email
+            data['employeeId'] = f'EMP{valid_emails.index(email)}'
+            
+            employee = Employee(**data)
+            try:
+                employee.full_clean()  # This triggers model validation
+                employee.save()
+                self.assertEqual(employee.personalEmail, email)
+            except ValidationError as e:
+                self.fail(f"Valid email '{email}' was rejected: {e}")
+    
+    def test_invalid_email_formats(self):
+        """Test that invalid email formats are rejected."""
+        invalid_emails = [
+            'notanemail',
+            '@example.com',
+            'user@',
+            'user @example.com',
+            'user@.com',
+            'user..name@example.com',
+            '',
+        ]
+        
+        for email in invalid_emails:
+            data = self.valid_employee_data.copy()
+            data['personalEmail'] = email
+            data['employeeId'] = f'INVALID{invalid_emails.index(email)}'
+            
+            employee = Employee(**data)
+            with self.assertRaises(ValidationError, msg=f"Invalid email '{email}' was accepted"):
+                employee.full_clean()
+    
+    def test_email_validation_error_message(self):
+        """Test that email validation returns appropriate error message."""
+        data = self.valid_employee_data.copy()
+        data['personalEmail'] = 'invalid.email'
+        
+        employee = Employee(**data)
+        with self.assertRaises(ValidationError) as context:
+            employee.full_clean()
+        
+        # Check that the error is for personalEmail field
+        self.assertIn('personalEmail', context.exception.message_dict)
+    
+    # Phone Number Validation Tests
+    
+    def test_valid_phone_formats(self):
+        """Test that valid phone number formats with country codes are accepted."""
+        valid_phones = [
+            '+1 415-555-2671',
+            '+91 9876543210',
+            '+44 20 7946 0958',
+            '+1-555-123-4567',
+            '+91 (987) 654-3210',
+            '+86 138 0013 8000',
+        ]
+        
+        for phone in valid_phones:
+            data = self.valid_employee_data.copy()
+            data['mobileNumber'] = phone
+            data['employeeId'] = f'PHONE{valid_phones.index(phone)}'
+            data['personalEmail'] = f'user{valid_phones.index(phone)}@example.com'
+            
+            employee = Employee(**data)
+            try:
+                employee.full_clean()
+                employee.save()
+                self.assertEqual(employee.mobileNumber, phone)
+            except ValidationError as e:
+                self.fail(f"Valid phone '{phone}' was rejected: {e}")
+    
+    def test_phone_without_country_code(self):
+        """Test that phone numbers without country code are rejected."""
+        invalid_phones = [
+            '4155552671',
+            '9876543210',
+            '555-1234',
+        ]
+        
+        for phone in invalid_phones:
+            data = self.valid_employee_data.copy()
+            data['mobileNumber'] = phone
+            data['employeeId'] = f'NOCC{invalid_phones.index(phone)}'
+            data['personalEmail'] = f'nocc{invalid_phones.index(phone)}@example.com'
+            
+            employee = Employee(**data)
+            with self.assertRaises(ValidationError, msg=f"Phone without country code '{phone}' was accepted"):
+                employee.full_clean()
+    
+    def test_phone_length_validation(self):
+        """Test that phone numbers with invalid lengths are rejected."""
+        # Too short (less than 10 digits)
+        short_phones = [
+            '+1 123',
+            '+91 12345',
+        ]
+        
+        for phone in short_phones:
+            data = self.valid_employee_data.copy()
+            data['mobileNumber'] = phone
+            data['employeeId'] = f'SHORT{short_phones.index(phone)}'
+            data['personalEmail'] = f'short{short_phones.index(phone)}@example.com'
+            
+            employee = Employee(**data)
+            with self.assertRaises(ValidationError, msg=f"Short phone '{phone}' was accepted"):
+                employee.full_clean()
+        
+        # Too long (more than 15 digits)
+        long_phones = [
+            '+1 1234567890123456',
+            '+91 12345678901234567',
+        ]
+        
+        for phone in long_phones:
+            data = self.valid_employee_data.copy()
+            data['mobileNumber'] = phone
+            data['employeeId'] = f'LONG{long_phones.index(phone)}'
+            data['personalEmail'] = f'long{long_phones.index(phone)}@example.com'
+            
+            employee = Employee(**data)
+            with self.assertRaises(ValidationError, msg=f"Long phone '{phone}' was accepted"):
+                employee.full_clean()
+    
+    def test_phone_validation_error_message(self):
+        """Test that phone validation returns appropriate error message."""
+        data = self.valid_employee_data.copy()
+        data['mobileNumber'] = '1234567890'  # No country code
+        
+        employee = Employee(**data)
+        with self.assertRaises(ValidationError) as context:
+            employee.full_clean()
+        
+        # Check that the error is for mobileNumber field
+        self.assertIn('mobileNumber', context.exception.message_dict)
+        error_message = str(context.exception.message_dict['mobileNumber'][0])
+        self.assertIn('country code', error_message.lower())
+
+
+class EmployeeSerializerValidationTest(TestCase):
+    """Test cases for EmployeeSerializer validation."""
+    
+    def setUp(self):
+        """Set up base employee data."""
+        self.valid_data = {
+            'firstName': 'Jane',
+            'lastName': 'Smith',
+            'employeeId': 'EMP100',
+            'personalEmail': 'jane.smith@example.com',
+            'mobileNumber': '+1 555-123-4567',
+            'joiningDate': '2024-01-01',
+            'department': 'Marketing',
+            'designation': 'Marketing Manager',
+        }
+    
+    def test_serializer_with_valid_data(self):
+        """Test that serializer accepts valid data."""
+        serializer = EmployeeSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid(), f"Serializer errors: {serializer.errors}")
+    
+    def test_serializer_rejects_invalid_email(self):
+        """Test that serializer rejects invalid email."""
+        data = self.valid_data.copy()
+        data['personalEmail'] = 'invalid.email'
+        
+        serializer = EmployeeSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('personalEmail', serializer.errors)
+    
+    def test_serializer_rejects_phone_without_country_code(self):
+        """Test that serializer rejects phone without country code."""
+        data = self.valid_data.copy()
+        data['mobileNumber'] = '5551234567'
+        
+        serializer = EmployeeSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('mobileNumber', serializer.errors)
+    
+    def test_serializer_rejects_short_phone(self):
+        """Test that serializer rejects phone numbers that are too short."""
+        data = self.valid_data.copy()
+        data['mobileNumber'] = '+1 123'
+        
+        serializer = EmployeeSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('mobileNumber', serializer.errors)
+    
+    def test_serializer_rejects_long_phone(self):
+        """Test that serializer rejects phone numbers that are too long."""
+        data = self.valid_data.copy()
+        data['mobileNumber'] = '+1 12345678901234567890'
+        
+        serializer = EmployeeSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('mobileNumber', serializer.errors)
+    
+    def test_serializer_error_messages_are_descriptive(self):
+        """Test that validation error messages are clear and helpful."""
+        # Test email error message
+        data = self.valid_data.copy()
+        data['personalEmail'] = 'notanemail'
+        
+        serializer = EmployeeSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        email_error = str(serializer.errors['personalEmail'][0])
+        self.assertIn('email', email_error.lower())
+        
+        # Test phone error message
+        data = self.valid_data.copy()
+        data['mobileNumber'] = '1234567890'
+        
+        serializer = EmployeeSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        phone_error = str(serializer.errors['mobileNumber'][0])
+        self.assertIn('country code', phone_error.lower())

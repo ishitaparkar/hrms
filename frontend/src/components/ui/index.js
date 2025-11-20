@@ -10,3 +10,5 @@ export { default as Card } from './Card';
 export { default as Button } from './Button';
 export { default as InfoCard } from './InfoCard';
 export { default as InfoRow } from './InfoRow';
+export { default as PasswordInput } from './PasswordInput';
+export { default as PhoneInput } from './PhoneInput';

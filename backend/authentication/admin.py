@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, UserPreferences, RoleAssignment, AuditLog
+from .models import UserProfile, UserPreferences, RoleAssignment, AuditLog, PhoneAuthAttempt, AccountSetupToken
 
 
 @admin.register(UserProfile)
@@ -41,4 +41,35 @@ class AuditLogAdmin(admin.ModelAdmin):
     
     def has_delete_permission(self, request, obj=None):
         # Prevent deletion of audit logs
+        return False
+
+
+@admin.register(PhoneAuthAttempt)
+class PhoneAuthAttemptAdmin(admin.ModelAdmin):
+    list_display = ('email', 'phone_number', 'success', 'attempt_time', 'ip_address')
+    search_fields = ('email', 'phone_number', 'ip_address')
+    list_filter = ('success', 'attempt_time')
+    readonly_fields = ('email', 'phone_number', 'attempt_time', 'success', 'ip_address', 'user_agent')
+    date_hierarchy = 'attempt_time'
+    
+    def has_add_permission(self, request):
+        # Prevent manual creation of auth attempts
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        # Allow deletion for cleanup purposes
+        return True
+
+
+@admin.register(AccountSetupToken)
+class AccountSetupTokenAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'created_at', 'expires_at', 'used', 'used_at')
+    search_fields = ('employee__firstName', 'employee__lastName', 'employee__personalEmail', 'token')
+    list_filter = ('used', 'created_at', 'expires_at')
+    readonly_fields = ('token', 'created_at', 'expires_at', 'used', 'used_at')
+    raw_id_fields = ('employee',)
+    date_hierarchy = 'created_at'
+    
+    def has_add_permission(self, request):
+        # Prevent manual creation of tokens
         return False

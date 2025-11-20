@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/permissions.py
+# hypothesis_version: 6.141.1
+
+[',', 'ACCESS_DENIED', 'Employee', 'HTTP_X_FORWARDED_FOR', 'Not own data', 'REMOTE_ADDR', 'department', 'employee', 'id', 'object_department', 'profile', 'reason', 'request_method', 'request_path', 'required_permission', 'required_permissions', 'required_roles', 'user_department', 'user_roles']

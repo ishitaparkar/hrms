@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/attendance_leave/migrations/0001_initial.py
+# hypothesis_version: 6.141.1
+
+['-date', '0.00', 'Absent', 'Attendance Record', 'Attendance Records', 'AttendanceRecord', 'Half Day', 'ID', 'Late', 'Present', 'attendance_records', 'check_in', 'check_out', 'created_at', 'date', 'employee', 'employee_management', 'id', 'indexes', 'notes', 'ordering', 'status', 'unique_together', 'updated_at', 'verbose_name', 'verbose_name_plural', 'work_hours']

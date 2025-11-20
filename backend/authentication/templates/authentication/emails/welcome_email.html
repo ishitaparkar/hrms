@@ -200,38 +200,64 @@
                             </div>
                             
                             <div class="message">
-                                Welcome to {{ organization_name }}! Your employee account has been successfully created. You can now access the HRMS portal to view your information, request leave, and stay connected with the organization.
+                                Welcome to {{ organization_name }}! Your employee account has been successfully created. We're excited to have you join our team.
                             </div>
                             
-                            <!-- Credentials Box -->
+                            <div class="message">
+                                To activate your account and access the HRMS portal, please follow the steps below:
+                            </div>
+                            
+                            <!-- Getting Started Section -->
                             <div class="credentials-box">
-                                <h2>Your Login Credentials</h2>
+                                <h2>🚀 Getting Started - Account Activation</h2>
+                                <div class="message" style="margin-bottom: 15px; font-size: 14px;">
+                                    <strong>Step 1:</strong> Click the button below to access the portal<br>
+                                    <strong>Step 2:</strong> Verify your identity using your email and phone number<br>
+                                    <strong>Step 3:</strong> Review your auto-generated username<br>
+                                    <strong>Step 4:</strong> Create your secure password
+                                </div>
+                            </div>
+                            
+                            <!-- Prominent Portal URL Button -->
+                            <div class="button-container">
+                                <a href="{{ portal_url }}" class="button" style="font-size: 16px; padding: 16px 40px;">Access HRMS Portal</a>
+                            </div>
+                            
+                            <div class="message" style="text-align: center; font-size: 13px; color: #6b7280; margin-top: 10px;">
+                                Portal URL: <a href="{{ portal_url }}" style="color: #2563eb; text-decoration: none;">{{ portal_url }}</a>
+                            </div>
+                            
+                            <!-- Your Information Box -->
+                            <div class="credentials-box" style="margin-top: 30px;">
+                                <h2>📋 Your Information</h2>
+                                <div class="message" style="font-size: 14px; margin-bottom: 10px;">
+                                    You'll need this information during the activation process:
+                                </div>
                                 <div class="credential-item">
                                     <span class="credential-label">Employee ID:</span>
                                     <span class="credential-value">{{ employee_id }}</span>
                                 </div>
                                 <div class="credential-item">
-                                    <span class="credential-label">Username:</span>
-                                    <span class="credential-value">{{ username }}</span>
+                                    <span class="credential-label">Email Address:</span>
+                                    <span class="credential-value">{{ employee_email }}</span>
                                 </div>
                                 <div class="credential-item">
-                                    <span class="credential-label">Temporary Password:</span>
-                                    <span class="credential-value">{{ temporary_password }}</span>
+                                    <span class="credential-label">Phone Number:</span>
+                                    <span class="credential-value">{{ employee_phone }}</span>
                                 </div>
-                            </div>
-                            
-                            <!-- Login Button -->
-                            <div class="button-container">
-                                <a href="{{ portal_url }}" class="button">Login to Portal</a>
                             </div>
                             
                             <!-- Security Notice -->
                             <div class="security-notice">
                                 <h3>🔒 Important Security Information</h3>
+                                <p style="margin-bottom: 10px;">
+                                    <strong>Account Activation Required:</strong> You must complete the activation process to access your account. During activation, you will create a secure password that meets our security requirements.
+                                </p>
+                                <p style="margin-bottom: 10px;">
+                                    <strong>Password Requirements:</strong> Your password must be at least 8 characters long and include uppercase letters, lowercase letters, numbers, and special characters.
+                                </p>
                                 <p>
-                                    For your security, you will be required to change your password immediately upon your first login. 
-                                    Please do not share your credentials with anyone. If you did not expect this email or have any 
-                                    concerns, please contact the HR department immediately.
+                                    <strong>Keep Your Information Secure:</strong> Never share your login credentials with anyone. If you did not expect this email or have any concerns, please contact the HR department immediately.
                                 </p>
                             </div>
                             

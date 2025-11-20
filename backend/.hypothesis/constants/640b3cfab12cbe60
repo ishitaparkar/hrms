@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/performance_management/views.py
+# hypothesis_version: 6.141.1
+
+['-completion_date', '-created_at', '-date', 'Cancelled', 'achievements', 'appraisals', 'error', 'goals', 'profile', 'trainings']

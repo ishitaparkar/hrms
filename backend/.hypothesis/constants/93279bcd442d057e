@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/leave_management/migrations/0002_alter_leaverequest_options.py
+# hypothesis_version: 6.141.1
+
+['0001_initial', 'approve_leaves', 'leave_management', 'leaverequest', 'manage_own_leaves', 'permissions', 'view_all_leaves']

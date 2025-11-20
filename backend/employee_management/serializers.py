@@ -3,6 +3,7 @@ from .models import Employee, EmployeeDocument
 from authentication.services import AccountCreationService
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.contrib.auth.models import User
+from authentication.validators import validate_email_format, validate_phone_number
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -20,6 +21,44 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = '__all__'
+    
+    def validate_personalEmail(self, value):
+        """
+        Validate personal email format.
+        
+        Args:
+            value: Email address to validate
+            
+        Returns:
+            str: Validated email address
+            
+        Raises:
+            serializers.ValidationError: If email format is invalid
+        """
+        try:
+            validate_email_format(value)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(str(e.message))
+        return value
+    
+    def validate_mobileNumber(self, value):
+        """
+        Validate mobile number format with country code.
+        
+        Args:
+            value: Phone number to validate
+            
+        Returns:
+            str: Validated phone number
+            
+        Raises:
+            serializers.ValidationError: If phone number format is invalid
+        """
+        try:
+            validate_phone_number(value)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(str(e.message))
+        return value
     
     def get_can_edit(self, obj):
         """
@@ -74,19 +113,14 @@ class EmployeeSerializer(serializers.ModelSerializer):
         error_message = None
         
         try:
-            user, temporary_password, created = AccountCreationService.create_user_account(
-                employee=employee,
-                request=request
-            )
-            user_account_created = created
-            username = user.username
-        except ValueError as e:
-            # Handle duplicate email or existing account errors
-            error_message = str(e)
-            # Don't fail employee creation, but report the error
+            # For the new phone-based authentication flow, we only send welcome email
+            # User account will be created during the phone authentication setup process
+            AccountCreationService.send_welcome_email_only(employee, request)
+            user_account_created = True  # Email sent successfully
+            username = employee.personalEmail  # Will be the initial username
         except Exception as e:
-            # Handle other errors (role assignment, email sending, etc.)
-            error_message = f"Account creation failed: {str(e)}"
+            # Handle email sending errors
+            error_message = f"Welcome email failed: {str(e)}"
             # Don't fail employee creation, but report the error
         
         # Store account creation details in the instance for the view to access

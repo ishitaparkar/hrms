@@ -190,3 +190,33 @@ class AuditLogSerializer(serializers.ModelSerializer):
             'ip_address', 'timestamp'
         ]
         read_only_fields = ['id', 'timestamp']
+
+
+class PhoneAuthenticationSerializer(serializers.Serializer):
+    """
+    Serializer for phone-based authentication request.
+    """
+    email = serializers.EmailField(required=True)
+    phone_number = serializers.CharField(required=True, max_length=20)
+    
+    def validate_email(self, value):
+        """Validate email format."""
+        if not value:
+            raise serializers.ValidationError("Email address is required")
+        return value.lower()
+    
+    def validate_phone_number(self, value):
+        """Validate phone number format."""
+        if not value:
+            raise serializers.ValidationError("Phone number is required")
+        
+        # Basic validation - should start with + and contain only digits after that
+        if not value.startswith('+'):
+            raise serializers.ValidationError("Phone number must include country code (e.g., +1, +91)")
+        
+        # Remove the + and check if rest are digits
+        digits_only = value[1:].replace(' ', '').replace('-', '')
+        if not digits_only.isdigit():
+            raise serializers.ValidationError("Phone number contains invalid characters")
+        
+        return value

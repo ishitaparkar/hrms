@@ -5,6 +5,7 @@ import { usePermission } from '../contexts/PermissionContext';
 import PermissionError from '../components/PermissionError';
 import usePermissionError from '../hooks/usePermissionError';
 import { PageHeader, Card, Button } from '../components/ui';
+import ResendWelcomeEmailButton from '../components/ResendWelcomeEmailButton';
 
 const EmployeeManagementPage = () => {
   const navigate = useNavigate();
@@ -103,6 +104,9 @@ const EmployeeManagementPage = () => {
   const canManagePayroll = hasPermission('authentication.manage_payroll') || 
                            hasRole('HR Manager') || 
                            hasRole('Super Admin');
+  
+  // Check if user is Super Admin (for resending welcome emails)
+  const isSuperAdmin = hasRole('Super Admin');
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
@@ -204,8 +208,8 @@ const EmployeeManagementPage = () => {
                     <td className="px-6 py-4 text-text-light dark:text-text-dark">
                       {employee.department}
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center gap-3">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-2 flex-wrap">
                         {canManageEmployees ? (
                           <>
                             <Link 
@@ -220,6 +224,29 @@ const EmployeeManagementPage = () => {
                             >
                               Delete
                             </button>
+                            {isSuperAdmin && (
+                              <button
+                                onClick={async () => {
+                                  if (window.confirm(`Resend welcome email to ${employee.firstName} ${employee.lastName}?`)) {
+                                    try {
+                                      const token = localStorage.getItem('authToken');
+                                      await axios.post(
+                                        `http://127.0.0.1:8000/api/auth/resend-welcome-email/${employee.id}/`,
+                                        {},
+                                        { headers: { 'Authorization': `Token ${token}` } }
+                                      );
+                                      alert(`Welcome email sent to ${employee.personalEmail}`);
+                                    } catch (error) {
+                                      alert(`Failed to send email: ${error.response?.data?.error || error.message}`);
+                                    }
+                                  }
+                                }}
+                                className="text-green-600 hover:text-green-700 dark:hover:text-green-400 text-xs font-medium transition-colors"
+                                title="Resend welcome email"
+                              >
+                                📧 Resend
+                              </button>
+                            )}
                           </>
                         ) : (
                           <Link 

@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/performance_management/models.py
+# hypothesis_version: 6.141.1
+
+[255, '-completion_date', '-created_at', '-date', 'Achievement', 'Achievements', 'Appraisal', 'Appraisals', 'Cancelled', 'Completed', 'Date of achievement', 'Date of appraisal', 'Goal', 'Goals', 'In Progress', 'Overdue', 'Training', 'Trainings', 'achievements', 'achievements_awarded', 'appraisals', 'appraisals_reviewed', 'goals', 'trainings']

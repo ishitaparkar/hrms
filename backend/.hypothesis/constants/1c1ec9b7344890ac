@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/hrms_core/settings.py
+# hypothesis_version: 6.141.1
+
+['.env', '/media/', '10', '5432', '587', 'APP_DIRS', 'BACKEND', 'DEFAULT_FROM_EMAIL', 'DIRS', 'EMAIL_BACKEND', 'EMAIL_HOST', 'EMAIL_HOST_PASSWORD', 'EMAIL_HOST_USER', 'EMAIL_PORT', 'EMAIL_TIMEOUT', 'EMAIL_USE_SSL', 'EMAIL_USE_TLS', 'ENGINE', 'EXCEPTION_HANDLER', 'False', 'HOST', 'NAME', 'OPTIONS', 'PAGE_SIZE', 'PASSWORD', 'PORT', 'SERVER_EMAIL', 'True', 'USER', 'UTC', 'attendance_leave', 'authentication', 'context_processors', 'corsheaders', 'dashboard', 'default', 'django.contrib.admin', 'django.contrib.auth', 'employee_management', 'en-us', 'hrms_core.urls', 'hrms_db', 'leave_management', 'localhost', 'media', 'password', 'payroll', 'postgres', 'rest_framework', 'smtp.gmail.com', 'static/']

@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/performance_management/migrations/0001_initial.py
+# hypothesis_version: 6.141.1
+
+[255, '-completion_date', '-created_at', '-date', 'Achievement', 'Achievements', 'Appraisal', 'Appraisals', 'Cancelled', 'Completed', 'Date of achievement', 'Date of appraisal', 'Goal', 'Goals', 'ID', 'In Progress', 'Overdue', 'Training', 'Trainings', 'achievements', 'achievements_awarded', 'appraisals', 'appraisals_reviewed', 'awarded_by', 'certificate_issued', 'certificate_url', 'comments', 'completion_date', 'course_name', 'created_at', 'date', 'description', 'duration_hours', 'employee', 'employee_management', 'goals', 'id', 'ordering', 'period_end', 'period_start', 'provider', 'rating', 'reviewer', 'status', 'target_date', 'title', 'trainings', 'updated_at', 'verbose_name', 'verbose_name_plural']

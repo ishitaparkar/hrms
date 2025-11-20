@@ -7,14 +7,16 @@ from employee_management.models import Employee
 from leave_management.models import LeaveRequest
 
 
-# Predefined role names - ONLY 3 ROLES
+# Predefined role names
 ROLE_SUPER_ADMIN = 'Super Admin'
 ROLE_HR_MANAGER = 'HR Manager'
+ROLE_DEPARTMENT_HEAD = 'Department Head'
 ROLE_EMPLOYEE = 'Employee'
 
 # Role hierarchy (higher index = higher privilege)
 ROLE_HIERARCHY = [
     ROLE_EMPLOYEE,
+    ROLE_DEPARTMENT_HEAD,
     ROLE_HR_MANAGER,
     ROLE_SUPER_ADMIN,
 ]
@@ -180,6 +182,8 @@ def user_has_role(user, role_name):
     Returns:
         bool: True if user has the role, False otherwise
     """
+    if not user or not user.is_authenticated or not user.pk:
+        return False
     return user.groups.filter(name=role_name).exists()
 
 
@@ -194,6 +198,8 @@ def user_has_any_role(user, role_names):
     Returns:
         bool: True if user has any of the roles, False otherwise
     """
+    if not user or not user.is_authenticated or not user.pk:
+        return False
     return user.groups.filter(name__in=role_names).exists()
 
 
@@ -220,6 +226,8 @@ def get_user_role_names(user):
     Returns:
         list: List of role name strings
     """
+    if not user or not user.is_authenticated or not user.pk:
+        return []
     return list(user.groups.values_list('name', flat=True))
 
 
@@ -309,8 +317,10 @@ def audit_log(action, actor, request=None, target_user=None, resource_type=None,
     
     Args:
         action (str): The action being performed. Must be one of:
-                     'ROLE_ASSIGNED', 'ROLE_REVOKED', 'PERMISSION_CHANGED', 'ACCESS_DENIED'
-        actor (User): The user performing the action
+                     'ROLE_ASSIGNED', 'ROLE_REVOKED', 'PERMISSION_CHANGED', 'ACCESS_DENIED',
+                     'EMPLOYEE_CREATED', 'ACCOUNT_CREATED', 'EMAIL_SENT', 'EMAIL_FAILED',
+                     'AUTH_ATTEMPT', 'AUTH_SUCCESS', 'AUTH_FAILED', 'ACCOUNT_ACTIVATED'
+        actor (User): The user performing the action (can be None for system actions)
         request (Request, optional): Django/DRF request object for IP extraction
         target_user (User, optional): The user being affected by the action
         resource_type (str, optional): Type of resource being accessed/modified
@@ -359,10 +369,14 @@ def audit_log(action, actor, request=None, target_user=None, resource_type=None,
         ip_address = get_client_ip(request)
     
     # Create and return the audit log entry
+    # Only set actor if it's a saved user object
+    actor_to_save = actor if actor and actor.pk else None
+    target_user_to_save = target_user if target_user and target_user.pk else None
+    
     audit_entry = AuditLog.objects.create(
         action=action,
-        actor=actor,
-        target_user=target_user,
+        actor=actor_to_save,
+        target_user=target_user_to_save,
         resource_type=resource_type or '',
         resource_id=resource_id,
         details=details,

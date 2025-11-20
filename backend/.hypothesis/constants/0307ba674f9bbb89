@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/migrations/0003_populate_user_profiles.py
+# hypothesis_version: 6.141.1
+
+['@', 'Employee', 'Group', 'RoleAssignment', 'User', 'UserProfile', 'auth', 'authentication', 'employee_management', 'profile']

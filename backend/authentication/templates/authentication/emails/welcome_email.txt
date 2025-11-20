@@ -2,22 +2,47 @@ Welcome to {{ organization_name }}
 
 Dear {{ employee_first_name }} {{ employee_last_name }},
 
-Welcome to {{ organization_name }}! Your employee account has been successfully created. You can now access the HRMS portal to view your information, request leave, and stay connected with the organization.
+Welcome to {{ organization_name }}! Your employee account has been successfully created. We're excited to have you join our team.
 
-YOUR LOGIN CREDENTIALS
-=======================
+To activate your account and access the HRMS portal, please follow the steps below:
 
-Employee ID:         {{ employee_id }}
-Username:            {{ username }}
-Temporary Password:  {{ temporary_password }}
 
-Please log in at: {{ portal_url }}
+GETTING STARTED - ACCOUNT ACTIVATION
+=====================================
+
+Step 1: Access the portal using the URL below
+Step 2: Verify your identity using your email and phone number
+Step 3: Review your auto-generated username
+Step 4: Create your secure password
+
+
+ACCESS HRMS PORTAL
+==================
+
+Portal URL: {{ portal_url }}
+
+
+YOUR INFORMATION
+================
+
+You'll need this information during the activation process:
+
+Employee ID:     {{ employee_id }}
+Email Address:   {{ employee_email }}
+Phone Number:    {{ employee_phone }}
 
 
 IMPORTANT SECURITY INFORMATION
 ===============================
 
-For your security, you will be required to change your password immediately upon your first login. Please do not share your credentials with anyone. If you did not expect this email or have any concerns, please contact the HR department immediately.
+ACCOUNT ACTIVATION REQUIRED:
+You must complete the activation process to access your account. During activation, you will create a secure password that meets our security requirements.
+
+PASSWORD REQUIREMENTS:
+Your password must be at least 8 characters long and include uppercase letters, lowercase letters, numbers, and special characters.
+
+KEEP YOUR INFORMATION SECURE:
+Never share your login credentials with anyone. If you did not expect this email or have any concerns, please contact the HR department immediately.
 
 
 If you have any questions or need assistance, please don't hesitate to contact the HR team.

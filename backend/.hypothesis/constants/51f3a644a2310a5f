@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/employee_management/serializers.py
+# hypothesis_version: 6.141.1
+
+['.', '__all__', '_permissions', 'can_delete', 'can_edit', 'can_manage', 'category', 'department', 'designation', 'download_url', 'employee', 'error_message', 'file', 'file_size', 'file_type', 'firstName', 'full_name', 'id', 'lastName', 'mobileNumber', 'name', 'personalEmail', 'profile_image', 'request', 'status', 'temporary_password', 'upload_date', 'uploaded_by', 'uploaded_by_name', 'user_account_created', 'user_profile', 'user_roles', 'username']

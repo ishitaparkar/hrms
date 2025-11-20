@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/migrations/0001_initial.py
+# hypothesis_version: 6.141.1
+
+['Admin', 'Employee', 'HR', 'HR Manager', 'ID', 'Profile', 'id', 'role', 'user']

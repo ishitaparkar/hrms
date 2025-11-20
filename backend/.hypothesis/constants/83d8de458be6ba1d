@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/migrations/0008_add_onboarding_audit_actions.py
+# hypothesis_version: 6.141.1
+
+['ACCESS_DENIED', 'ACCOUNT_ACTIVATED', 'ACCOUNT_CREATED', 'AUTH_ATTEMPT', 'AUTH_FAILED', 'AUTH_SUCCESS', 'Access Denied', 'Account Activated', 'Account Created', 'EMAIL_FAILED', 'EMAIL_SENT', 'EMPLOYEE_CREATED', 'Email Failed', 'Email Sent', 'Employee Created', 'PERMISSION_CHANGED', 'Permission Changed', 'ROLE_ASSIGNED', 'ROLE_REVOKED', 'Role Assigned', 'Role Revoked', 'action', 'auditlog', 'authentication']

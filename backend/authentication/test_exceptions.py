@@ -51,9 +51,10 @@ class PermissionErrorHandlingTestCase(APITestCase):
             employeeId='EMP001',
             firstName='John',
             lastName='Doe',
-            email='employee1@test.com',
+            personalEmail='employee1@test.com',
             department='Computer Science',
-            designation='Lecturer'
+            designation='Lecturer',
+            joiningDate='2024-01-01'
         )
         
         self.employee_profile.employee = self.employee_record

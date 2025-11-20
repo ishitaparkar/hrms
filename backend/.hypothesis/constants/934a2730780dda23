@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/migrations/0006_phoneauthattempt_accountsetuptoken.py
+# hypothesis_version: 6.141.1
+
+[100, 255, '-attempt_time', '-created_at', '0005_userpreferences', 'Account Setup Token', 'Account Setup Tokens', 'AccountSetupToken', 'ID', 'Phone Auth Attempt', 'Phone Auth Attempts', 'PhoneAuthAttempt', 'attempt_time', 'authentication', 'created_at', 'email', 'employee', 'employee_management', 'expires_at', 'id', 'indexes', 'ip_address', 'ordering', 'phone_number', 'setup_tokens', 'success', 'token', 'used', 'used_at', 'user_agent', 'verbose_name', 'verbose_name_plural']

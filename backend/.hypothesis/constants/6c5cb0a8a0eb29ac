@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/utils.py
+# hypothesis_version: 6.141.1
+
+['Automatic expiration', 'Department Head', 'Employee', 'HR Manager', 'ROLE_REVOKED', 'RoleAssignment', 'Super Admin', 'add_employee', 'add_leaverequest', 'after_state', 'approve_leaves', 'assigned_at', 'assigned_by', 'before_state', 'change_employee', 'change_leaverequest', 'delete_employee', 'delete_leaverequest', 'error_count', 'expired_at', 'expired_count', 'manage_employees', 'manage_own_leaves', 'name', 'notes', 'profile', 'reason', 'role', 'role_name', 'timestamp', 'user', 'view_all_employees', 'view_all_leaves', 'view_employee', 'view_leaverequest']

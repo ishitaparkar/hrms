@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/employee_management/urls.py
+# hypothesis_version: 6.141.1
+
+['employee-detail', 'employee-documents', 'employee-list-create', 'employees/', 'employees/<int:pk>/', 'employees/my-team/', 'my-team']

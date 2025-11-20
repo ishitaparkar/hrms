@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/performance_management/serializers.py
+# hypothesis_version: 6.141.1
+
+['awarded_by', 'awarded_by_name', 'certificate_issued', 'certificate_url', 'comments', 'completion_date', 'course_name', 'created_at', 'date', 'description', 'duration_hours', 'employee', 'employee_name', 'id', 'period_end', 'period_start', 'provider', 'rating', 'reviewer', 'reviewer_name', 'status', 'target_date', 'title', 'updated_at']

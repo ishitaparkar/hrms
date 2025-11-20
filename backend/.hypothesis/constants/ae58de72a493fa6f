@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/attendance_leave/models.py
+# hypothesis_version: 6.141.1
+
+['-date', '0.00', 'Absent', 'Attendance Record', 'Attendance Records', 'Half Day', 'Late', 'Present', 'attendance_records', 'date', 'employee']

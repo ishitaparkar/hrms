@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/validators.py
+# hypothesis_version: 6.141.1
+
+['+', '[^\\d]', '^\\+(\\d{1,3})']

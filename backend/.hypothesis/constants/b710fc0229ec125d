@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/services.py
+# hypothesis_version: 6.141.1
+
+['!@#$%^&*', 'DEFAULT_FROM_EMAIL', 'HRMS', 'ORGANIZATION_NAME', 'PORTAL_URL', 'ROLE_ASSIGNED', 'UserAccount', 'account_creation', 'action_type', 'department', 'email', 'email_error', 'email_sent', 'employee', 'employee_first_name', 'employee_id', 'employee_last_name', 'employee_name', 'noreply@hrms.com', 'organization_name', 'portal_url', 'role_assigned', 'temporary_password', 'text/html', 'user', 'user_profile', 'username']

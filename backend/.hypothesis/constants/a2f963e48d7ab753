@@ -1,0 +1,4 @@
+# file: /Users/ishitaparkar/Developer/projects/hrms_project_Mid/backend/authentication/models.py
+# hypothesis_version: 6.141.1
+
+[100, '-assigned_at', '-timestamp', 'ACCESS_DENIED', 'Access Denied', 'Audit Log', 'Audit Logs', 'Dark', 'Light', 'PERMISSION_CHANGED', 'Permission Changed', 'ROLE_ASSIGNED', 'ROLE_REVOKED', 'Role Assigned', 'Role Assignment', 'Role Assignments', 'Role Revoked', 'System Default', 'UTC', 'User Preferences', 'User Profile', 'User Profiles', 'assigned_roles', 'audit_actions', 'audit_targets', 'dark', 'en', 'light', 'preferences', 'profile', 'role_assignments', 'system', 'user_profile']
