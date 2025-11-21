@@ -29,38 +29,79 @@ class Designation(models.Model):
         unique_together = ['title', 'department']
 
 class Employee(models.Model):
-    # Admin-only fields (locked)
+    # ==========================================
+    # 1. Basic Information
+    # ==========================================
     firstName = models.CharField(max_length=100)
     lastName = models.CharField(max_length=100)
     employeeId = models.CharField(max_length=20, unique=True)
-    workEmail = models.EmailField(max_length=100, unique=True, null=True, blank=True)
+    gender = models.CharField(max_length=20, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], default='Male')
+    dateOfBirth = models.DateField(null=True, blank=True)
+    maritalStatus = models.CharField(max_length=20, default='Single')
+
+    # ==========================================
+    # 2. Contact Information
+    # ==========================================
     personalEmail = models.EmailField(
         max_length=100, 
         unique=True,
         validators=[validate_email_format],
         help_text="Valid email address for account creation"
     )
-    joiningDate = models.DateField()
-    department = models.CharField(max_length=100)
-    department_new = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL, related_name='employees')
-    designation = models.CharField(max_length=100)
-    designation_new = models.ForeignKey(Designation, null=True, blank=True, on_delete=models.SET_NULL, related_name='employees')
-    employmentStatus = models.CharField(max_length=50, blank=True, default='Active')
-    schoolFaculty = models.CharField(max_length=200, blank=True)
-    reportingManager = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='subordinates')
-    
-    # Shared fields (admin sets, employee can edit)
-    officeLocation = models.CharField(max_length=200, blank=True)
-    workPhone = models.CharField(max_length=20, blank=True)
-    
-    # Employee-only fields
-    preferredName = models.CharField(max_length=100, blank=True)
-    profilePhoto = models.ImageField(upload_to='profile_photos/%Y/%m/', null=True, blank=True)
     mobileNumber = models.CharField(
         max_length=20,
         validators=[validate_phone_number],
         help_text="Phone number with country code (e.g., +919876543210)"
     )
+    presentAddress = models.TextField(blank=True)
+    permanentAddress = models.TextField(blank=True)
+
+    # ==========================================
+    # 3. Work Information
+    # ==========================================
+    workEmail = models.EmailField(max_length=100, unique=True, null=True, blank=True)
+    joiningDate = models.DateField()
+    
+    # Legacy string fields (kept for OCR/Frontend compatibility)
+    department = models.CharField(max_length=100)
+    designation = models.CharField(max_length=100)
+    
+    # New Foreign Keys (Optional for now, can migrate data later)
+    department_new = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL, related_name='employees')
+    designation_new = models.ForeignKey(Designation, null=True, blank=True, on_delete=models.SET_NULL, related_name='employees')
+    
+    employmentStatus = models.CharField(max_length=50, blank=True, default='Active')
+    employeeType = models.CharField(max_length=50, default='Full Time Employees')
+    schoolFaculty = models.CharField(max_length=200, blank=True)
+    reportingManager = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='subordinates')
+    officeLocation = models.CharField(max_length=200, blank=True)
+    workPhone = models.CharField(max_length=20, blank=True)
+    probationPeriod = models.IntegerField(default=0, help_text="In months", null=True, blank=True)
+
+    # ==========================================
+    # 4. Qualification & Experience
+    # ==========================================
+    highestQualification = models.CharField(max_length=200, blank=True)
+    experienceYears = models.IntegerField(default=0, null=True, blank=True)
+    previousInstitution = models.CharField(max_length=200, blank=True)
+
+    # ==========================================
+    # 5. Payroll & Banking
+    # ==========================================
+    bankAccountNumber = models.CharField(max_length=50, blank=True)
+    ifscCode = models.CharField(max_length=20, blank=True)
+    panNumber = models.CharField(max_length=20, blank=True)
+    
+    # ==========================================
+    # 6. Personal & System
+    # ==========================================
+    preferredName = models.CharField(max_length=100, blank=True)
+    # Renamed to match Frontend logic
+    profile_picture = models.ImageField(upload_to='profile_pics/%Y/%m/', null=True, blank=True)
+
+    # ==========================================
+    # 7. Emergency Contact
+    # ==========================================
     emergencyContactName = models.CharField(max_length=200, blank=True)
     emergencyContactRelationship = models.CharField(max_length=100, blank=True)
     emergencyContactPhone = models.CharField(max_length=20, blank=True)

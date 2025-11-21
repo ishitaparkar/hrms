@@ -20,20 +20,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Employee
+        # '__all__' includes profile_picture automatically
         fields = '__all__'
     
     def validate_personalEmail(self, value):
         """
         Validate personal email format.
-        
-        Args:
-            value: Email address to validate
-            
-        Returns:
-            str: Validated email address
-            
-        Raises:
-            serializers.ValidationError: If email format is invalid
         """
         try:
             validate_email_format(value)
@@ -44,15 +36,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
     def validate_mobileNumber(self, value):
         """
         Validate mobile number format with country code.
-        
-        Args:
-            value: Phone number to validate
-            
-        Returns:
-            str: Validated phone number
-            
-        Raises:
-            serializers.ValidationError: If phone number format is invalid
         """
         try:
             validate_phone_number(value)
@@ -61,37 +44,21 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return value
     
     def get_can_edit(self, obj):
-        """
-        Determine if the current user can edit this employee.
-        """
         request = self.context.get('request')
         if not request or not request.user.is_authenticated:
             return False
-        
-        # Check if user has manage permission from context
         return self.context.get('can_manage', False)
     
     def get_can_delete(self, obj):
-        """
-        Determine if the current user can delete this employee.
-        """
         request = self.context.get('request')
         if not request or not request.user.is_authenticated:
             return False
-        
-        # Check if user has manage permission from context
         return self.context.get('can_manage', False)
     
     def get_has_user_account(self, obj):
-        """
-        Check if the employee has a linked user account.
-        """
         return hasattr(obj, 'user_profile') and obj.user_profile is not None and obj.user_profile.user is not None
     
     def get_username(self, obj):
-        """
-        Get the username of the linked user account.
-        """
         if hasattr(obj, 'user_profile') and obj.user_profile and obj.user_profile.user:
             return obj.user_profile.user.username
         return None
@@ -100,8 +67,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         """
         Override create to automatically create a user account for the employee.
         """
-        from rest_framework.exceptions import ValidationError
-        
         # Create the employee record first
         employee = super().create(validated_data)
         
@@ -114,16 +79,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
         
         try:
             # For the new phone-based authentication flow, we only send welcome email
-            # User account will be created during the phone authentication setup process
             AccountCreationService.send_welcome_email_only(employee, request)
-            user_account_created = True  # Email sent successfully
-            username = employee.personalEmail  # Will be the initial username
+            user_account_created = True
+            username = employee.personalEmail
         except Exception as e:
-            # Handle email sending errors
             error_message = f"Welcome email failed: {str(e)}"
-            # Don't fail employee creation, but report the error
         
-        # Store account creation details in the instance for the view to access
         employee._account_creation_result = {
             'user_account_created': user_account_created,
             'username': username,
@@ -138,8 +99,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         Add permission metadata to the serialized representation.
         """
         representation = super().to_representation(instance)
-        
-        # Add permission metadata
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             representation['_permissions'] = {
@@ -147,7 +106,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
                 'can_delete': self.get_can_delete(instance),
                 'user_roles': self.context.get('user_roles', [])
             }
-        
         return representation
 
 
@@ -168,17 +126,11 @@ class EmployeeDocumentSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'upload_date', 'uploaded_by', 'file_size', 'file_type']
     
     def get_uploaded_by_name(self, obj):
-        """
-        Get the full name of the user who uploaded the document.
-        """
         if obj.uploaded_by:
             return f"{obj.uploaded_by.first_name} {obj.uploaded_by.last_name}".strip() or obj.uploaded_by.username
         return None
     
     def get_download_url(self, obj):
-        """
-        Generate the download URL for the document.
-        """
         request = self.context.get('request')
         if request and obj.file:
             return request.build_absolute_uri(
@@ -187,37 +139,24 @@ class EmployeeDocumentSerializer(serializers.ModelSerializer):
         return None
     
     def validate_file(self, value):
-        """
-        Validate file size and type.
-        """
-        # Check file size
         if value.size > EmployeeDocument.MAX_FILE_SIZE:
             raise serializers.ValidationError(
                 f"File size exceeds maximum allowed size of {EmployeeDocument.MAX_FILE_SIZE / (1024 * 1024)}MB"
             )
         
-        # Check file extension
         file_extension = value.name.split('.')[-1].lower()
         if file_extension not in EmployeeDocument.ALLOWED_EXTENSIONS:
             raise serializers.ValidationError(
                 f"File type '.{file_extension}' is not allowed. Allowed types: {', '.join(EmployeeDocument.ALLOWED_EXTENSIONS)}"
             )
-        
         return value
     
     def create(self, validated_data):
-        """
-        Override create to automatically set file metadata.
-        """
         file = validated_data.get('file')
         if file:
-            # Set file size
             validated_data['file_size'] = file.size
-            
-            # Set file type (extension)
             validated_data['file_type'] = file.name.split('.')[-1].lower()
         
-        # Set uploaded_by from request context
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             validated_data['uploaded_by'] = request.user
@@ -242,14 +181,14 @@ class TeamMemberSerializer(serializers.ModelSerializer):
     
     def get_profile_image(self, obj):
         """
-        Get profile image URL. Returns None for now as we don't have profile images yet.
-        This can be extended when profile image functionality is added.
+        Get profile image URL.
         """
-        # TODO: Implement profile image retrieval when feature is added
+        if obj.profile_picture:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.profile_picture.url)
+            return obj.profile_picture.url
         return None
     
     def get_full_name(self, obj):
-        """
-        Get the full name of the employee.
-        """
         return f"{obj.firstName} {obj.lastName}"

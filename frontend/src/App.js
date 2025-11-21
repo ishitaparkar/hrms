@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { PermissionProvider } from "./contexts/PermissionContext";
 import { PreferencesProvider } from "./contexts/PreferencesContext";
 import { Navigate } from "react-router-dom";
+import Chatbot from "./components/Chatbot"; // <--- Added Chatbot Import
 
 // Page Components
 import LoginPage from "./pages/LoginPage";
@@ -107,14 +108,14 @@ function App() {
 
         {/* Protected Routes with Layout - All Authenticated Users */}
         <Route element={<ProtectedRoute />}>
-          <Route element={<Layout />}>
+          {/* Added Chatbot here */}
+          <Route element={<><Layout /><Chatbot /></>}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/employees" element={<EmployeeManagementPage />} />
             <Route path="/employees/:employeeId" element={<EmployeeDetailsPage />} />
 
             {/* Profile & Self-Service */}
             <Route path="/profile" element={<ProfilePage />} />
-            {/* Redirect /my-profile to /profile for backward compatibility */}
             <Route path="/my-profile" element={<Navigate to="/profile" replace />} />
 
             {/* My Space Pages */}
@@ -137,7 +138,8 @@ function App() {
 
         {/* Payroll Routes - All authenticated users (filtered by role in component) */}
         <Route element={<ProtectedRoute />}>
-          <Route element={<Layout />}>
+          {/* Added Chatbot here */}
+          <Route element={<><Layout /><Chatbot /></>}>
             <Route path="/payroll" element={<PayrollPage />} />
             <Route path="/recruitment" element={<RecruitmentPage />} />
             <Route path="/employee-assets" element={<EmployeeAssetsPage />} />
@@ -146,7 +148,8 @@ function App() {
 
         {/* HR Manager & Super Admin Routes */}
         <Route element={<ProtectedRoute requiredPermission="authentication.manage_employees" />}>
-          <Route element={<Layout />}>
+          {/* Added Chatbot here */}
+          <Route element={<><Layout /><Chatbot /></>}>
             <Route path="/add-employee" element={<AddEmployeePage />} />
             <Route path="/employees/edit/:employeeId" element={<EditEmployeePage />} />
             <Route path="/requirement-raising" element={<RequirementPage />} />
@@ -159,7 +162,8 @@ function App() {
 
         {/* Appraisal Routes - Department Head, HR Manager & Super Admin */}
         <Route element={<ProtectedRoute />}>
-          <Route element={<Layout />}>
+          {/* Added Chatbot here */}
+          <Route element={<><Layout /><Chatbot /></>}>
             <Route path="/appraisal" element={<AppraisalPage />} />
             <Route path="/appraisal/start/:employeeId" element={<StartReviewPage />} />
             <Route path="/appraisal/report/:employeeId" element={<ViewReportPage />} />
@@ -168,7 +172,8 @@ function App() {
 
         {/* Admin Routes - Super Admin Only */}
         <Route element={<ProtectedRoute requiredRole="Super Admin" />}>
-          <Route element={<Layout />}>
+          {/* Added Chatbot here */}
+          <Route element={<><Layout /><Chatbot /></>}>
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/role-management" element={<RoleManagementPage />} />
             <Route path="/audit-logs" element={<AuditLogPage />} />

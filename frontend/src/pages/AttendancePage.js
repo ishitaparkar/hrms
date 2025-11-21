@@ -1,404 +1,239 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import './AttendancePage.css';
-import moment from 'moment';
-import { PageHeader, Card, Button } from '../components/ui';
+import React, { useState } from 'react';
 
-// --- MAIN PAGE COMPONENT ---
 const AttendancePage = () => {
-  const [allEmployees, setAllEmployees] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('All');
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/api/employees/');
-        const employeesData = response.data?.results || response.data || [];
-        setAllEmployees(employeesData);
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchEmployees();
-  }, []);
-
-  // temporary simulation of today's status (replace with real data when available)
-  const todaysAttendance = useMemo(
-    () =>
-      allEmployees.map((employee, index) => ({
-        ...employee,
-        status: ['Present', 'Absent', 'On Leave'][index % 3],
-      })),
-    [allEmployees]
-  );
-
-  const filteredAttendance = todaysAttendance.filter((staff) =>
-    activeFilter === 'All' ? true : staff.status === activeFilter
-  );
-
-  const handleViewAttendance = (employee) => {
-    setSelectedEmployee(employee);
-    setIsModalOpen(true);
+  // --- Mock Data (Replace with API Data later) ---
+  const employee = {
+    name: "Jane Doe",
+    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuBzJ2jkV8k8qLbXeLp_94GyORIih5gVarAPRbPnP_kcnfArWX6_jdru1ImcONniBYL8Y5VJSRV06ssAcXA92y4xEw1Menp27qA0pujM8cCH1JqRYKyqtcbeMy8bxAbYcjC72HFD--grCl99G6W8o85XiBoZZOB6b2a2igPm0_Ne7wvlUUm7wnIA_jao4Dyd6aWp98vVWA8yY_Di1WdQUx2pEbXOI1yLAVUYsGjeMlyOR_aAsKa7gW3Fw0vdHoBsFofXKnqGY7vqVbFH",
+    role: "Senior UI/UX Designer"
   };
 
-  const getStatusBadgeClass = (status) => {
+  const attendanceLog = [
+    { id: 1, date: "Oct 31, 2023", status: "Present", checkIn: "09:02 AM", checkOut: "05:05 PM", hours: "8h 3m" },
+    { id: 2, date: "Oct 30, 2023", status: "Present", checkIn: "08:58 AM", checkOut: "05:01 PM", hours: "8h 3m" },
+    { id: 3, date: "Oct 27, 2023", status: "Sick Leave", checkIn: "-", checkOut: "-", hours: "-" },
+    { id: 4, date: "Oct 26, 2023", status: "Holiday", checkIn: "-", checkOut: "-", hours: "-" },
+    { id: 5, date: "Oct 25, 2023", status: "Half-day", checkIn: "09:10 AM", checkOut: "01:15 PM", hours: "4h 5m" },
+  ];
+
+  // --- Helper for Status Colors ---
+  const getStatusStyles = (status) => {
     switch (status) {
-      case 'Present':
-        return 'bg-green-100 text-green-800';
-      case 'Absent':
-        return 'bg-red-100 text-red-800';
-      case 'On Leave':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      case 'Present': return 'bg-green-100 text-green-700';
+      case 'Sick Leave': return 'bg-red-100 text-red-700';
+      case 'Holiday': return 'bg-purple-100 text-purple-700';
+      case 'Half-day': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-700';
     }
+  };
+
+  // --- Simple Calendar Generator (Visual Only) ---
+  const renderCalendarDays = () => {
+    const days = [];
+    // Padding for empty days at start of month
+    for (let i = 0; i < 1; i++) {
+        days.push(<div key={`empty-${i}`} className="h-10 w-full flex items-center justify-center text-gray-400 text-sm"></div>);
+    }
+    // Days 1-31
+    for (let i = 1; i <= 31; i++) {
+        let style = "text-gray-500 dark:text-gray-400"; // Default
+        
+        // Randomly styling some days to match your UI design
+        if ([2, 3, 5, 9, 10, 11, 12, 16, 17, 19, 23, 24, 25, 26, 27, 30, 31].includes(i)) style = "bg-green-100 text-green-700 font-medium rounded-full";
+        if ([4].includes(i)) style = "bg-yellow-100 text-yellow-700 font-medium rounded-full";
+        if ([6].includes(i)) style = "bg-purple-100 text-purple-700 font-medium rounded-full";
+        if ([20].includes(i)) style = "bg-red-100 text-red-700 font-medium rounded-full";
+        if (i === 18) style = "bg-blue-600 text-white font-bold rounded-full shadow-md"; // Selected Day
+
+        days.push(
+            <div key={i} className={`h-10 w-full text-sm flex items-center justify-center cursor-pointer ${style}`}>
+                {i}
+            </div>
+        );
+    }
+    return days;
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark">
-      <PageHeader
-        title="Today's Attendance"
-        description="Summary of staff attendance for today."
-        icon="event_available"
-      />
-
-      <div className="p-4 md:p-6 lg:p-8 space-y-6">
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={activeFilter === 'All' ? 'primary' : 'secondary'}
-            size="sm"
-            onClick={() => setActiveFilter('All')}
-          >
-            All ({todaysAttendance.length})
-          </Button>
-          <Button
-            variant={activeFilter === 'Present' ? 'primary' : 'secondary'}
-            size="sm"
-            onClick={() => setActiveFilter('Present')}
-          >
-            Present
-          </Button>
-          <Button
-            variant={activeFilter === 'Absent' ? 'primary' : 'secondary'}
-            size="sm"
-            onClick={() => setActiveFilter('Absent')}
-          >
-            Absent
-          </Button>
-          <Button
-            variant={activeFilter === 'On Leave' ? 'primary' : 'secondary'}
-            size="sm"
-            onClick={() => setActiveFilter('On Leave')}
-          >
-            On Leave
-          </Button>
-        </div>
-
-        <Card noPadding>
-          {isLoading ? (
-            <div className="text-center py-8 text-subtext-light dark:text-subtext-dark">
-              Loading employee data...
+    <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 min-h-screen font-sans">
+      <div className="p-8">
+        
+        {/* --- Page Header --- */}
+        <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <img className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" src={employee.avatar} alt="Avatar" />
+            <div>
+              <h1 className="text-gray-900 dark:text-white text-3xl font-bold leading-tight tracking-tight">
+                {employee.name}'s Attendance
+              </h1>
+              <p className="text-gray-500 dark:text-gray-400 text-base font-normal">
+                Review and manage attendance details for October 2023.
+              </p>
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left min-w-[640px]">
-                <thead className="text-xs uppercase bg-gray-50 dark:bg-gray-800 text-text-light dark:text-text-dark">
-                  <tr>
-                    <th className="px-6 py-3">Staff Name</th>
-                    <th className="px-6 py-3">Department</th>
-                    <th className="px-6 py-3">Today's Status</th>
-                    <th className="px-6 py-3 text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border-light dark:divide-border-dark">
-                  {filteredAttendance.map((staff, idx) => (
-                    <tr 
-                      key={staff.id ?? idx} 
-                      className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                    >
-                      <td className="px-6 py-4 font-medium text-text-light dark:text-text-dark">
-                        {staff.firstName} {staff.lastName}
-                      </td>
-                      <td className="px-6 py-4 text-text-light dark:text-text-dark">
-                        {staff.department}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeClass(staff.status)}`}>
-                          {staff.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewAttendance(staff)}
-                        >
-                          View Attendance
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                  {filteredAttendance.length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="px-6 py-8 text-center text-subtext-light dark:text-subtext-dark">
-                        No records found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Card>
-      </div>
-
-      {isModalOpen && selectedEmployee && (
-        <CalendarModal
-          employee={selectedEmployee}
-          closeModal={() => setIsModalOpen(false)}
-        />
-      )}
-    </div>
-  );
-};
-
-// --- CALENDAR MODAL ---
-const CalendarModal = ({ employee, closeModal }) => {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const [timeFilter, setTimeFilter] = useState('Month'); // Year | Month | Week | Day
-  const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
-  const [selectedWeek, setSelectedWeek] = useState(0);
-
-  // years range - current year and two previous (adjust as needed)
-  const years = useMemo(() => {
-    return [currentYear, currentYear - 1, currentYear - 2];
-  }, [currentYear]);
-
-  const weeksInMonth = useMemo(() => getWeeksInMonth(selectedYear, selectedMonth), [selectedYear, selectedMonth]);
-
-  // attendanceRecords is memoized so it re-generates only when year/month change
-  const attendanceRecords = useMemo(
-    () => generateMonthlyAttendance(selectedYear, selectedMonth),
-    [selectedYear, selectedMonth]
-  );
-
-  // summary for visible selection (we could restrict counts by timeFilter if needed)
-  const summary = useMemo(() => {
-    return Object.values(attendanceRecords).reduce(
-      (acc, status) => {
-        if (status === 'Present') acc.present++;
-        else if (status === 'Absent') acc.absent++;
-        else if (status === 'Half Day') acc.halfDay++;
-        return acc;
-      },
-      { present: 0, absent: 0, halfDay: 0 }
-    );
-  }, [attendanceRecords]);
-
-  function getWeeksInMonth(year, month) {
-    const firstDay = moment({ year, month }).startOf('month');
-    const lastDay = moment({ year, month }).endOf('month');
-    const weeks = [];
-    let currentWeekStart = firstDay.clone().startOf('week');
-
-    while (currentWeekStart.isSameOrBefore(lastDay, 'day')) {
-      weeks.push({
-        label: `Week ${weeks.length + 1}: ${currentWeekStart.format('MMM D')} - ${currentWeekStart.clone().endOf('week').format('MMM D')}`,
-        start: currentWeekStart.clone(),
-        end: currentWeekStart.clone().endOf('week'),
-      });
-      currentWeekStart.add(1, 'week');
-    }
-
-    return weeks;
-  }
-
-  const tileDisabled = ({ date, view }) => {
-    // only restrict on month view (react-calendar default). Adjust if you want to support 'year' view etc.
-    if (view !== 'month') return false;
-
-    const mDate = moment(date);
-
-    if (timeFilter === 'Year') {
-      return mDate.year() !== selectedYear;
-    }
-    if (timeFilter === 'Month') {
-      return mDate.year() !== selectedYear || mDate.month() !== selectedMonth;
-    }
-    if (timeFilter === 'Week') {
-      const week = weeksInMonth[selectedWeek];
-      if (!week) return true;
-      return !mDate.isBetween(week.start, week.end, 'day', '[]');
-    }
-    if (timeFilter === 'Day') {
-      // when Day filter is active, disable everything except the currently selected day (if you want to allow selecting a specific day you can store it)
-      // For now, we won't disable days for Day filter (the UI can be extended to let user pick the specific day)
-      return false;
-    }
-
-    return false;
-  };
-
-  const tileContent = ({ date, view }) => {
-    const status = attendanceRecords[date.toDateString()];
-    if (!status) return null;
-
-    // small visual dot + screenreader-friendly text
-    const dotClass = status === 'Present' ? 'calendar-dot-present' : status === 'Absent' ? 'calendar-dot-absent' : 'calendar-dot-half';
-
-    return (
-      <div className="flex flex-col items-center mt-1">
-        <span className={`w-2 h-2 rounded-full ${dotClass}`} aria-hidden="true" />
-        <span className="sr-only">{status}</span>
-      </div>
-    );
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-card-light dark:bg-card-dark p-4 md:p-6 rounded-xl w-full max-w-3xl shadow-xl relative my-4">
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-2 mb-4">
-          <div className="flex-1">
-            <h2 className="text-lg md:text-xl font-semibold text-heading-light dark:text-heading-dark">
-              Attendance: {employee.firstName} {employee.lastName}
-            </h2>
-            <p className="text-xs md:text-sm text-subtext-light dark:text-subtext-dark">
-              View attendance records by different time ranges.
-            </p>
           </div>
-          <button 
-            onClick={closeModal} 
-            aria-label="Close" 
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-2xl transition-colors flex-shrink-0"
-          >
-            &times;
+          <button className="flex items-center justify-center gap-2 h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition-colors shadow-sm">
+            <span className="material-symbols-outlined text-base">download</span>
+            <span>Export Report</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-          <div className="lg:col-span-2 flex flex-wrap items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <select 
-              value={timeFilter} 
-              onChange={(e) => setTimeFilter(e.target.value)} 
-              className="text-xs md:text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-text-light dark:text-text-dark px-2 py-1 w-full sm:w-auto"
-            >
-              <option value="Year">Year</option>
-              <option value="Month">Month</option>
-              <option value="Week">Week</option>
-              <option value="Day">Day</option>
-            </select>
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* --- LEFT COLUMN: Calendar & Table --- */}
+          <div className="w-full lg:w-2/3 flex flex-col gap-6">
+            
+            {/* 1. Calendar Widget */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="flex flex-col gap-2">
+                {/* Calendar Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-full">
+                    <span className="material-symbols-outlined">chevron_left</span>
+                  </button>
+                  <p className="text-gray-900 dark:text-white text-lg font-bold">October 2023</p>
+                  <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-full">
+                    <span className="material-symbols-outlined">chevron_right</span>
+                  </button>
+                </div>
 
-            {timeFilter === 'Year' && (
-              <select 
-                value={selectedYear} 
-                onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))} 
-                className="text-xs md:text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-text-light dark:text-text-dark px-2 py-1 w-full sm:w-auto"
-              >
-                {years.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
-            )}
-
-            {(timeFilter === 'Month' || timeFilter === 'Week' || timeFilter === 'Day') && (
-              <>
-                <select 
-                  value={selectedYear} 
-                  onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))} 
-                  className="text-xs md:text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-text-light dark:text-text-dark px-2 py-1 w-full sm:w-auto"
-                >
-                  {years.map((y) => (
-                    <option key={y} value={y}>
-                      {y}
-                    </option>
+                {/* Days of Week */}
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => (
+                    <p key={day} className="text-gray-400 dark:text-gray-500 text-xs font-bold text-center">{day}</p>
                   ))}
-                </select>
+                </div>
 
-                <select 
-                  value={selectedMonth} 
-                  onChange={(e) => setSelectedMonth(parseInt(e.target.value, 10))} 
-                  className="text-xs md:text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-text-light dark:text-text-dark px-2 py-1 w-full sm:w-auto"
-                >
-                  {moment.months().map((m, i) => (
-                    <option key={m} value={i}>
-                      {m}
-                    </option>
-                  ))}
-                </select>
-              </>
-            )}
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1">
+                    {renderCalendarDays()}
+                </div>
+              </div>
+            </div>
 
-            {timeFilter === 'Week' && (
-              <select 
-                value={selectedWeek} 
-                onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))} 
-                className="text-xs md:text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-text-light dark:text-text-dark px-2 py-1 w-full sm:w-auto"
-              >
-                {weeksInMonth.map((w, i) => (
-                  <option key={i} value={i}>
-                    {w.label}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-
-          <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg text-xs md:text-sm">
-            <h4 className="font-semibold mb-2 text-heading-light dark:text-heading-dark">
-              Summary for Selection
-            </h4>
-            <div className="space-y-1 text-text-light dark:text-text-dark">
-              <p>
-                <strong>Present:</strong> {summary.present} days
-              </p>
-              <p>
-                <strong>Absent:</strong> {summary.absent} days
-              </p>
-              <p>
-                <strong>Half Days:</strong> {summary.halfDay} days
-              </p>
+            {/* 2. Attendance Log Table */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+              <h3 className="text-gray-900 dark:text-white text-lg font-bold tracking-tight px-6 pt-6 pb-4">Attendance Log</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                  <thead className="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-gray-700/50">
+                    <tr>
+                      <th className="px-6 py-3">Date</th>
+                      <th className="px-6 py-3">Status</th>
+                      <th className="px-6 py-3">Check-in</th>
+                      <th className="px-6 py-3">Check-out</th>
+                      <th className="px-6 py-3">Total Hours</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                    {attendanceLog.map((log) => (
+                      <tr key={log.id} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                          {log.date}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${getStatusStyles(log.status)}`}>
+                            {log.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{log.checkIn}</td>
+                        <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{log.checkOut}</td>
+                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">{log.hours}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* Pagination */}
+              <div className="flex items-center justify-between p-4 border-t border-gray-200 dark:border-gray-700">
+                <span className="text-sm text-gray-500 dark:text-gray-400">Showing <span className="font-semibold text-gray-900 dark:text-white">1-5</span> of 21</span>
+                <div className="flex gap-2">
+                  <button className="px-3 py-1 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">Previous</button>
+                  <button className="px-3 py-1 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">Next</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white dark:bg-gray-800 p-2 md:p-4 rounded-lg overflow-x-auto">
-          <Calendar
-            className="border-none dark:text-text-dark w-full"
-            activeStartDate={new Date(selectedYear, selectedMonth)}
-            tileDisabled={tileDisabled}
-            tileContent={tileContent}
-          />
+          {/* --- RIGHT COLUMN: Filters & Summary --- */}
+          <div className="w-full lg:w-1/3 flex flex-col gap-6">
+            
+            {/* 3. Filters Card */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+              <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Filters</h4>
+              <div className="space-y-4">
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Date Range</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <span className="material-symbols-outlined text-gray-400 text-xl">calendar_month</span>
+                    </div>
+                    <input 
+                        type="text" 
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" 
+                        placeholder="Oct 1, 2023 - Oct 31, 2023" 
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Filter by Status</label>
+                  <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option>All Statuses</option>
+                    <option value="present">Present</option>
+                    <option value="absent">Sick Leave</option>
+                    <option value="holiday">Holiday</option>
+                    <option value="half-day">Half-day</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Summary Card */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+              <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Monthly Summary</h4>
+              <div className="space-y-4">
+                
+                {/* Total Hours */}
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Total Working Hours</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">168.5 <span className="text-base font-medium text-gray-500">hours</span></p>
+                  </div>
+                  <div className="p-3 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300">
+                    <span className="material-symbols-outlined">schedule</span>
+                  </div>
+                </div>
+
+                {/* Paid Leave */}
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Paid Leave Balance</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">12 <span className="text-base font-medium text-gray-500">days</span></p>
+                  </div>
+                  <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-300">
+                    <span className="material-symbols-outlined">beach_access</span>
+                  </div>
+                </div>
+
+                {/* Absences */}
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Unplanned Absences</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">1 <span className="text-base font-medium text-gray-500">day</span></p>
+                  </div>
+                  <div className="p-3 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-300">
+                    <span className="material-symbols-outlined">sentiment_dissatisfied</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
   );
-};
-
-// Helper function to simulate monthly data
-const generateMonthlyAttendance = (year, month) => {
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const records = {};
-  const statuses = ['Present', 'Present', 'Absent', 'Half Day'];
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month, day);
-    // skip weekends in this simulated dataset
-    if (date.getDay() !== 0 && date.getDay() !== 6) {
-      records[date.toDateString()] = statuses[Math.floor(Math.random() * statuses.length)];
-    }
-  }
-  return records;
 };
 
 export default AttendancePage;

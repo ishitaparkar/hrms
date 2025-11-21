@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PhoneInput from '../components/ui/PhoneInput';
@@ -39,6 +39,98 @@ const FormSelect = ({ label, name, children, ...props }) => (
 
 const AddEmployeePage = () => {
   const navigate = useNavigate();
+
+  // ==========================================================================
+  // 1. OCR / DOCUMENT SCANNING LOGIC
+  // ==========================================================================
+  const fileInputRef = useRef(null);
+  const [isScanning, setIsScanning] = useState(false);
+
+  // Helper: Convert OCR date (DD/MM/YYYY or DD-MM-YYYY) to ISO (YYYY-MM-DD)
+  const convertDateToISO = (dateStr) => {
+    if (!dateStr) return '';
+    // Split by forward slash or dash
+    const parts = dateStr.split(/[/-]/);
+    if (parts.length === 3) {
+        // Assuming format is DD-MM-YYYY or DD/MM/YYYY
+        if (parts[0].length === 2 && parts[2].length === 4) {
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+        // Assuming format is YYYY-MM-DD
+        if (parts[0].length === 4) {
+            return dateStr;
+        }
+    }
+    return '';
+  };
+
+  const handleScanClick = () => {
+    // Trigger the hidden file input click
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileScan = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsScanning(true);
+    const uploadData = new FormData();
+    uploadData.append('document', file);
+
+    try {
+        const token = localStorage.getItem('authToken');
+        
+        // Call the backend OCR endpoint
+        const response = await axios.post('http://127.0.0.1:8000/api/parse-document/', uploadData, {
+            headers: { 
+              'Authorization': `Token ${token}`, 
+              'Content-Type': 'multipart/form-data' 
+            }
+        });
+
+        if (response.data.success) {
+            const { email, phone, dob, name_guess } = response.data.data;
+            
+            // Logic to split the Name Guess into First and Last Name
+            let newFirst = '';
+            let newLast = '';
+            if (name_guess) {
+                const parts = name_guess.split(' ');
+                newFirst = parts[0]; // First word is First Name
+                if (parts.length > 1) {
+                  newLast = parts.slice(1).join(' '); // Rest is Last Name
+                }
+            }
+
+            // Auto-fill the form state
+            setFormData(prev => ({
+                ...prev,
+                firstName: newFirst || prev.firstName,
+                lastName: newLast || prev.lastName,
+                personalEmail: email || prev.personalEmail,
+                // Clean phone number (remove non-digits, keep last 10)
+                mobileNumber: phone ? phone.replace(/\D/g, '').slice(-10) : prev.mobileNumber,
+                dateOfBirth: convertDateToISO(dob) || prev.dateOfBirth
+            }));
+            
+            alert("Document scanned successfully! Please review the auto-filled fields.");
+        }
+    } catch (error) {
+        console.error("OCR Error", error);
+        if (error.response && error.response.status === 403) {
+            alert("Permission Denied: Only HR Managers or Super Admins can use the scanner.");
+        } else {
+            alert("Could not scan document. Please enter details manually or try a clearer image.");
+        }
+    } finally {
+        setIsScanning(false);
+        e.target.value = ''; // Reset file input so same file can be selected again
+    }
+  };
+  // ==========================================================================
+
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -198,7 +290,12 @@ const AddEmployeePage = () => {
         mobileNumber: formData.countryCode + ' ' + formData.mobileNumber.replace(/\D/g, ''),
       };
       
-      await axios.post('http://127.0.0.1:8000/api/employees/', submissionData);
+      // Adjust URL port if needed (assuming 8000 for Django)
+      await axios.post('http://127.0.0.1:8000/api/employees/', submissionData, {
+          headers: {
+            'Authorization': `Token ${localStorage.getItem('authToken')}`
+          }
+      });
       alert('Employee added successfully!');
       navigate('/employees');
     } catch (error) {
@@ -244,9 +341,44 @@ const AddEmployeePage = () => {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* ===== BASIC INFORMATION ===== */}
+          
+          {/* ===== BASIC INFORMATION SECTION (With Scanner) ===== */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-            <SectionTitle title="Basic Information" />
+            
+            {/* Custom Header with Scan Button */}
+            <div className="col-span-full flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 pb-4 border-b border-border-light">
+                <h2 className="text-lg font-semibold text-primary">Basic Information</h2>
+                
+                <div className="mt-2 sm:mt-0">
+                    {/* Hidden File Input */}
+                    <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        style={{display: 'none'}} 
+                        accept="image/*, .pdf" 
+                        onChange={handleFileScan}
+                    />
+                    {/* Visible Scan Button */}
+                    <button
+                        type="button"
+                        onClick={handleScanClick}
+                        disabled={isScanning}
+                        className="flex items-center gap-2 bg-blue-50 text-blue-700 border border-blue-200 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium shadow-sm"
+                    >
+                        {isScanning ? (
+                            <>
+                                <span className="animate-spin h-4 w-4 border-2 border-blue-700 border-t-transparent rounded-full"></span>
+                                Scanning...
+                            </>
+                        ) : (
+                            <>
+                                <span className="material-icons text-sm">document_scanner</span>
+                                Auto-fill from ID/Resume
+                            </>
+                        )}
+                    </button>
+                </div>
+            </div>
 
             <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-subtext-light mb-1">

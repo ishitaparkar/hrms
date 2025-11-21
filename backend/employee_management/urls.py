@@ -1,28 +1,32 @@
 from django.urls import path
-# 1. Import the new EmployeeDetailAPIView
 from .views import (
     EmployeeListCreateAPIView, 
     EmployeeDetailAPIView,
     EmployeeDocumentListAPIView,
     EmployeeDocumentDownloadAPIView,
-    MyTeamAPIView
+    MyTeamAPIView,
+    parse_employee_document
 )
+# Import the Chatbot View (Ensure you created backend/employee_management/chatbot.py)
+from .chatbot import ChatbotAPIView 
 
 urlpatterns = [
-    # This path is for getting the list of all employees and creating a new one.
-    # It handles GET and POST requests to /api/employees/
+    # 1. Automated Document Parsing (OCR)
+    path('parse-document/', parse_employee_document, name='parse-document'),
+
+    # 2. HR Assistant Chatbot
+    path('chatbot/', ChatbotAPIView.as_view(), name='chatbot'),
+
+    # 3. Employee List & Create
     path('employees/', EmployeeListCreateAPIView.as_view(), name='employee-list-create'),
     
-    # 2. Add this new path for handling a single employee
-    # It handles GET, PUT, and DELETE requests for URLs like /api/employees/1/, /api/employees/2/, etc.
-    # <int:pk> is a special syntax that captures the number from the URL 
-    # and passes it as a "primary key" (pk) to the view.
+    # 4. Single Employee Details
     path('employees/<int:pk>/', EmployeeDetailAPIView.as_view(), name='employee-detail'),
     
-    # Team management endpoint
+    # 5. Team management
     path('employees/my-team/', MyTeamAPIView.as_view(), name='my-team'),
     
-    # Document management endpoints
+    # 6. Document management
     path('employees/<int:employee_id>/documents/', EmployeeDocumentListAPIView.as_view(), name='employee-documents'),
     path('employees/<int:employee_id>/documents/<int:document_id>/download/', EmployeeDocumentDownloadAPIView.as_view(), name='employee-document-download'),
 ]
