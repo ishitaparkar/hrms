@@ -1,0 +1,103 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$ZiBvDfEto7ZczuDKygOcfp$tsqai33CdgrT9qzOz0OwPPge7Yyc9mxBSGsoVkKAUSs=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "superadmin",
+    "first_name": "Super",
+    "last_name": "Admin",
+    "email": "superadmin@university.edu",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-11-16T08:22:33.806Z",
+    "groups": [
+      [
+        "Super Admin"
+      ]
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$RUZr8I5yFhxG4EB6GZPx87$SCuAgc5+rKKsvOe5MTu63BcvuHm8GsTra9UkPKzxc7g=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "hrmanager",
+    "first_name": "HR",
+    "last_name": "Manager",
+    "email": "hrmanager@university.edu",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-11-16T08:22:33.958Z",
+    "groups": [
+      [
+        "HR Manager"
+      ]
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$dn87eiJZbBCQGaH2Edoyol$8bBz4xo852TTFCCcXbeP5T3pCE1Ve3/1LyvED5pbmxQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "employee",
+    "first_name": "Test",
+    "last_name": "Employee",
+    "email": "employee@university.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-11-16T08:22:34.101Z",
+    "groups": [
+      [
+        "Employee"
+      ]
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$fw3cB9gi3jFgRLvIiCtQwi$yVbtIN+W5DLsrEeUz3T/m2iLXdTl5iIL1zyxB7dxegQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "ishitaparkar04@gmail.com",
+    "first_name": "Ishita",
+    "last_name": "Parkar",
+    "email": "ishitaparkar04@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-11-17T10:03:57.837Z",
+    "groups": [
+      [
+        "Employee"
+      ]
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "!MaI2d0C54FEig5cOys5fAK4yGbJMVrY1iZOPSFKx",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "pruthajadhav82@gmail.com",
+    "first_name": "Prutha",
+    "last_name": "Jadhav",
+    "email": "pruthajadhav82@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-11-17T18:59:27.236Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

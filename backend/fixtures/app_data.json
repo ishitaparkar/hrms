@@ -1,0 +1,1738 @@
+[
+{
+  "model": "authentication.userprofile",
+  "pk": 14,
+  "fields": {
+    "user": [
+      "superadmin"
+    ],
+    "employee": 13,
+    "department": "Administration",
+    "phone_number": "",
+    "password_changed": true,
+    "created_at": "2025-11-16T08:22:33.954Z",
+    "updated_at": "2025-11-16T08:22:33.954Z"
+  }
+},
+{
+  "model": "authentication.userprofile",
+  "pk": 15,
+  "fields": {
+    "user": [
+      "hrmanager"
+    ],
+    "employee": 14,
+    "department": "Human Resources",
+    "phone_number": "",
+    "password_changed": true,
+    "created_at": "2025-11-16T08:22:34.099Z",
+    "updated_at": "2025-11-16T08:22:34.099Z"
+  }
+},
+{
+  "model": "authentication.userprofile",
+  "pk": 16,
+  "fields": {
+    "user": [
+      "employee"
+    ],
+    "employee": null,
+    "department": "General",
+    "phone_number": "",
+    "password_changed": true,
+    "created_at": "2025-11-16T08:22:34.245Z",
+    "updated_at": "2025-11-16T08:22:34.245Z"
+  }
+},
+{
+  "model": "authentication.userprofile",
+  "pk": 17,
+  "fields": {
+    "user": [
+      "ishitaparkar04@gmail.com"
+    ],
+    "employee": 1,
+    "department": "",
+    "phone_number": "",
+    "password_changed": true,
+    "created_at": "2025-11-17T19:53:34.758Z",
+    "updated_at": "2025-11-18T14:52:06.582Z"
+  }
+},
+{
+  "model": "authentication.userpreferences",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "employee"
+    ],
+    "email_notifications": false,
+    "sms_notifications": false,
+    "push_notifications": false,
+    "theme": "light",
+    "language": "en",
+    "timezone": "UTC",
+    "updated_at": "2025-11-18T14:46:44.006Z"
+  }
+},
+{
+  "model": "authentication.userpreferences",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "hrmanager"
+    ],
+    "email_notifications": true,
+    "sms_notifications": false,
+    "push_notifications": true,
+    "theme": "system",
+    "language": "en",
+    "timezone": "UTC",
+    "updated_at": "2025-11-18T14:56:28.732Z"
+  }
+},
+{
+  "model": "authentication.userpreferences",
+  "pk": 5,
+  "fields": {
+    "user": [
+      "ishitaparkar04@gmail.com"
+    ],
+    "email_notifications": false,
+    "sms_notifications": false,
+    "push_notifications": false,
+    "theme": "light",
+    "language": "en",
+    "timezone": "UTC",
+    "updated_at": "2026-02-06T10:48:56.053Z"
+  }
+},
+{
+  "model": "authentication.userpreferences",
+  "pk": 6,
+  "fields": {
+    "user": [
+      "superadmin"
+    ],
+    "email_notifications": true,
+    "sms_notifications": false,
+    "push_notifications": true,
+    "theme": "system",
+    "language": "en",
+    "timezone": "UTC",
+    "updated_at": "2025-11-18T16:09:01.765Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 1,
+  "fields": {
+    "action": "ROLE_ASSIGNED",
+    "actor": null,
+    "target_user": null,
+    "resource_type": "Role",
+    "resource_id": 1,
+    "details": {
+      "test": "data"
+    },
+    "ip_address": null,
+    "timestamp": "2025-11-15T22:04:11.838Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 2,
+  "fields": {
+    "action": "ROLE_ASSIGNED",
+    "actor": null,
+    "target_user": null,
+    "resource_type": "Role",
+    "resource_id": 1,
+    "details": {
+      "test": "data"
+    },
+    "ip_address": null,
+    "timestamp": "2025-11-15T22:04:40.768Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 3,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": null,
+    "target_user": null,
+    "resource_type": "Employee",
+    "resource_id": 1,
+    "details": {
+      "test": "denied"
+    },
+    "ip_address": null,
+    "timestamp": "2025-11-15T22:04:40.769Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 4,
+  "fields": {
+    "action": "ROLE_ASSIGNED",
+    "actor": null,
+    "target_user": null,
+    "resource_type": "Role",
+    "resource_id": 1,
+    "details": {
+      "test": "data"
+    },
+    "ip_address": null,
+    "timestamp": "2025-11-15T22:05:02.586Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 5,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": null,
+    "target_user": null,
+    "resource_type": "Employee",
+    "resource_id": 1,
+    "details": {
+      "test": "denied"
+    },
+    "ip_address": null,
+    "timestamp": "2025-11-15T22:05:02.587Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 6,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "employee"
+    ],
+    "target_user": null,
+    "resource_type": "RoleListCreateAPIView",
+    "resource_id": null,
+    "details": {
+      "timestamp": "2025-11-17T08:13:00.197423+00:00",
+      "user_roles": [
+        "Employee"
+      ],
+      "request_path": "/api/auth/roles/",
+      "request_method": "GET",
+      "required_roles": [
+        "Super Admin"
+      ],
+      "required_permission": "role:Super Admin"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2025-11-17T08:13:00.197Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 7,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "employee"
+    ],
+    "target_user": null,
+    "resource_type": "UserListAPIView",
+    "resource_id": null,
+    "details": {
+      "timestamp": "2025-11-17T08:13:00.198156+00:00",
+      "user_roles": [
+        "Employee"
+      ],
+      "request_path": "/api/auth/users/",
+      "request_method": "GET",
+      "required_roles": [
+        "Super Admin"
+      ],
+      "required_permission": "role:Super Admin"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2025-11-17T08:13:00.198Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 8,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "employee"
+    ],
+    "target_user": null,
+    "resource_type": "AuditLogListAPIView",
+    "resource_id": null,
+    "details": {
+      "timestamp": "2025-11-17T08:13:06.555484+00:00",
+      "user_roles": [
+        "Employee"
+      ],
+      "request_path": "/api/auth/audit-logs/",
+      "request_method": "GET",
+      "required_roles": [
+        "Super Admin"
+      ],
+      "required_permission": "role:Super Admin"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2025-11-17T08:13:06.555Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 9,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "employee"
+    ],
+    "target_user": null,
+    "resource_type": "UserListAPIView",
+    "resource_id": null,
+    "details": {
+      "timestamp": "2025-11-17T08:19:19.569543+00:00",
+      "user_roles": [
+        "Employee"
+      ],
+      "request_path": "/api/auth/users/",
+      "request_method": "GET",
+      "required_roles": [
+        "Super Admin"
+      ],
+      "required_permission": "role:Super Admin"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2025-11-17T08:19:19.569Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 10,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "employee"
+    ],
+    "target_user": null,
+    "resource_type": "RoleListCreateAPIView",
+    "resource_id": null,
+    "details": {
+      "timestamp": "2025-11-17T08:19:19.569887+00:00",
+      "user_roles": [
+        "Employee"
+      ],
+      "request_path": "/api/auth/roles/",
+      "request_method": "GET",
+      "required_roles": [
+        "Super Admin"
+      ],
+      "required_permission": "role:Super Admin"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2025-11-17T08:19:19.570Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 11,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "employee"
+    ],
+    "target_user": null,
+    "resource_type": "AuditLogListAPIView",
+    "resource_id": null,
+    "details": {
+      "timestamp": "2025-11-17T08:19:24.162114+00:00",
+      "user_roles": [
+        "Employee"
+      ],
+      "request_path": "/api/auth/audit-logs/",
+      "request_method": "GET",
+      "required_roles": [
+        "Super Admin"
+      ],
+      "required_permission": "role:Super Admin"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2025-11-17T08:19:24.162Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 12,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "employee"
+    ],
+    "target_user": null,
+    "resource_type": "UserListAPIView",
+    "resource_id": null,
+    "details": {
+      "timestamp": "2025-11-17T08:19:39.264203+00:00",
+      "user_roles": [
+        "Employee"
+      ],
+      "request_path": "/api/auth/users/",
+      "request_method": "GET",
+      "required_roles": [
+        "Super Admin"
+      ],
+      "required_permission": "role:Super Admin"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2025-11-17T08:19:39.264Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 13,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "employee"
+    ],
+    "target_user": null,
+    "resource_type": "RoleListCreateAPIView",
+    "resource_id": null,
+    "details": {
+      "timestamp": "2025-11-17T08:19:39.264749+00:00",
+      "user_roles": [
+        "Employee"
+      ],
+      "request_path": "/api/auth/roles/",
+      "request_method": "GET",
+      "required_roles": [
+        "Super Admin"
+      ],
+      "required_permission": "role:Super Admin"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2025-11-17T08:19:39.264Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 14,
+  "fields": {
+    "action": "ROLE_ASSIGNED",
+    "actor": [
+      "superadmin"
+    ],
+    "target_user": null,
+    "resource_type": "WelcomeEmail",
+    "resource_id": 17,
+    "details": {
+      "email": "sabirbagwan4@gmail.com",
+      "timestamp": "2026-02-04T05:39:17.424635+00:00",
+      "email_sent": false,
+      "action_type": "welcome_email_failed",
+      "email_error": "[Errno 8] nodename nor servname provided, or not known",
+      "employee_id": "EMP2004",
+      "employee_name": "Sabir Bagwan"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-02-04T05:39:17.424Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 15,
+  "fields": {
+    "action": "EMPLOYEE_CREATED",
+    "actor": [
+      "superadmin"
+    ],
+    "target_user": null,
+    "resource_type": "Employee",
+    "resource_id": 17,
+    "details": {
+      "name": "Sabir Bagwan",
+      "email": "sabirbagwan4@gmail.com",
+      "timestamp": "2026-02-04T05:39:17.428320+00:00",
+      "employee_id": "EMP2004"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-02-04T05:39:17.428Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 16,
+  "fields": {
+    "action": "ROLE_ASSIGNED",
+    "actor": [
+      "superadmin"
+    ],
+    "target_user": null,
+    "resource_type": "WelcomeEmail",
+    "resource_id": 17,
+    "details": {
+      "email": "sabirbagwan4@gmail.com",
+      "timestamp": "2026-02-04T05:40:20.788455+00:00",
+      "email_sent": false,
+      "action_type": "welcome_email_failed",
+      "email_error": "[Errno 8] nodename nor servname provided, or not known",
+      "employee_id": "EMP2004",
+      "employee_name": "Sabir Bagwan"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-02-04T05:40:20.789Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 17,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "superadmin"
+    ],
+    "target_user": null,
+    "resource_type": "WelcomeEmail",
+    "resource_id": 17,
+    "details": {
+      "email": "sabirbagwan4@gmail.com",
+      "error": "[Errno 8] nodename nor servname provided, or not known",
+      "resent_by": "superadmin",
+      "timestamp": "2026-02-04T05:40:20.792279+00:00",
+      "action_type": "welcome_email_resend_failed",
+      "employee_id": "EMP2004",
+      "employee_name": "Sabir Bagwan"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-02-04T05:40:20.792Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 18,
+  "fields": {
+    "action": "ROLE_ASSIGNED",
+    "actor": [
+      "superadmin"
+    ],
+    "target_user": null,
+    "resource_type": "WelcomeEmail",
+    "resource_id": 17,
+    "details": {
+      "email": "sabirbagwan4@gmail.com",
+      "timestamp": "2026-02-04T05:40:27.534002+00:00",
+      "email_sent": false,
+      "action_type": "welcome_email_failed",
+      "email_error": "[Errno 8] nodename nor servname provided, or not known",
+      "employee_id": "EMP2004",
+      "employee_name": "Sabir Bagwan"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-02-04T05:40:27.534Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 19,
+  "fields": {
+    "action": "ACCESS_DENIED",
+    "actor": [
+      "superadmin"
+    ],
+    "target_user": null,
+    "resource_type": "WelcomeEmail",
+    "resource_id": 17,
+    "details": {
+      "email": "sabirbagwan4@gmail.com",
+      "error": "[Errno 8] nodename nor servname provided, or not known",
+      "resent_by": "superadmin",
+      "timestamp": "2026-02-04T05:40:27.536203+00:00",
+      "action_type": "welcome_email_resend_failed",
+      "employee_id": "EMP2004",
+      "employee_name": "Sabir Bagwan"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-02-04T05:40:27.536Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 20,
+  "fields": {
+    "action": "ROLE_ASSIGNED",
+    "actor": [
+      "superadmin"
+    ],
+    "target_user": null,
+    "resource_type": "WelcomeEmail",
+    "resource_id": 17,
+    "details": {
+      "email": "sabirbagwan4@gmail.com",
+      "timestamp": "2026-02-04T05:43:33.980084+00:00",
+      "email_sent": true,
+      "action_type": "welcome_email_sent",
+      "employee_id": "EMP2004",
+      "employee_name": "Sabir Bagwan"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-02-04T05:43:33.981Z"
+  }
+},
+{
+  "model": "authentication.auditlog",
+  "pk": 21,
+  "fields": {
+    "action": "ROLE_ASSIGNED",
+    "actor": [
+      "superadmin"
+    ],
+    "target_user": null,
+    "resource_type": "WelcomeEmail",
+    "resource_id": 17,
+    "details": {
+      "email": "sabirbagwan4@gmail.com",
+      "resent_by": "superadmin",
+      "timestamp": "2026-02-04T05:43:33.986784+00:00",
+      "action_type": "welcome_email_resent",
+      "employee_id": "EMP2004",
+      "employee_name": "Sabir Bagwan",
+      "has_activated_account": false
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-02-04T05:43:33.987Z"
+  }
+},
+{
+  "model": "authentication.phoneauthattempt",
+  "pk": 1,
+  "fields": {
+    "email": "test@example.com",
+    "phone_number": "+919876543210",
+    "attempt_time": "2025-11-20T01:28:19.039Z",
+    "success": false,
+    "ip_address": "192.168.1.1",
+    "user_agent": "Mozilla/5.0"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 1,
+  "fields": {
+    "firstName": "Ishita",
+    "lastName": "Parkar",
+    "employeeId": "001",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "ishitaparkar04@gmail.com",
+    "mobileNumber": "9326662460",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "ishita.parkar@company.com",
+    "joiningDate": "2025-08-17",
+    "department": "Faculty of Engineering",
+    "designation": "Professor",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0123",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Ishi",
+    "profile_picture": "profile_pics/2026/02/WhatsApp_Image_2025-08-05_at_13.05.38.jpeg",
+    "emergencyContactName": "John Parkar",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9876",
+    "emergencyContactEmail": "john.parkar@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 2,
+  "fields": {
+    "firstName": "Prutha",
+    "lastName": "Jadhav",
+    "employeeId": "002",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "pruthajadhav82@gmail.com",
+    "mobileNumber": "9326662460",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "prutha.jadhav@company.com",
+    "joiningDate": "2025-09-11",
+    "department": "Faculty of Arts & Commerce",
+    "designation": "Lecturer",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Prutha",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for Prutha",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.prutha@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 3,
+  "fields": {
+    "firstName": "Bhavya",
+    "lastName": "Sharma",
+    "employeeId": "004",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "bhavyasharma05@gmail.com",
+    "mobileNumber": "987654345678",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "bhavya.sharma@company.com",
+    "joiningDate": "2025-10-17",
+    "department": "Administration",
+    "designation": "Professor",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Bhavya",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for Bhavya",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.bhavya@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 4,
+  "fields": {
+    "firstName": "Yash",
+    "lastName": "Adhau",
+    "employeeId": "003",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "yashadhau2@gmail.com",
+    "mobileNumber": "8729838092",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "yash.adhau@company.com",
+    "joiningDate": "2025-08-28",
+    "department": "Faculty of Engineering",
+    "designation": "Professor",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Yash",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for Yash",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.yash@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 5,
+  "fields": {
+    "firstName": "Viraj",
+    "lastName": "Sawant",
+    "employeeId": "005",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "virajsawant@123gmail.com",
+    "mobileNumber": "76545678767",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "viraj.sawant@company.com",
+    "joiningDate": "2025-09-10",
+    "department": "Faculty of Design",
+    "designation": "Design Mentor",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Viraj",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for Viraj",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.viraj@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 7,
+  "fields": {
+    "firstName": "prasad",
+    "lastName": "sawant",
+    "employeeId": "007",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "prasaddekhmukh25@gmail.com",
+    "mobileNumber": "9221333969",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "prasad.sawant@company.com",
+    "joiningDate": "2025-10-01",
+    "department": "Faculty of Management",
+    "designation": "Professor",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "prasad",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for prasad",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.prasad@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 8,
+  "fields": {
+    "firstName": "Sarah",
+    "lastName": "Johnson",
+    "employeeId": "EMP0009",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "hr.manager@university.edu",
+    "mobileNumber": "+1-555-1009",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "sarah.johnson@company.com",
+    "joiningDate": "2023-01-01",
+    "department": "Human Resources",
+    "designation": "HR Manager",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Sarah",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for Sarah",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.sarah@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 9,
+  "fields": {
+    "firstName": "Michael",
+    "lastName": "Chen",
+    "employeeId": "EMP0010",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "head.cs@university.edu",
+    "mobileNumber": "+1-555-1010",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "michael.chen@company.com",
+    "joiningDate": "2023-01-01",
+    "department": "Computer Science",
+    "designation": "Department Head",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Michael",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for Michael",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.michael@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 10,
+  "fields": {
+    "firstName": "Emily",
+    "lastName": "Rodriguez",
+    "employeeId": "EMP0011",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "head.math@university.edu",
+    "mobileNumber": "+1-555-1011",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "emily.rodriguez@company.com",
+    "joiningDate": "2023-01-01",
+    "department": "Mathematics",
+    "designation": "Department Head",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Emily",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for Emily",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.emily@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 11,
+  "fields": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "employeeId": "EMP0012",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "john.doe@university.edu",
+    "mobileNumber": "+1-555-1012",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "john.doe@company.com",
+    "joiningDate": "2023-01-01",
+    "department": "Computer Science",
+    "designation": "Assistant Professor",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "John",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for John",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.john@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 12,
+  "fields": {
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "employeeId": "EMP0013",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "jane.smith@university.edu",
+    "mobileNumber": "+1-555-1013",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "jane.smith@company.com",
+    "joiningDate": "2023-01-01",
+    "department": "Mathematics",
+    "designation": "Lecturer",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Jane",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for Jane",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.jane@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 13,
+  "fields": {
+    "firstName": "Super",
+    "lastName": "Admin",
+    "employeeId": "SUP0014",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "superadmin@university.edu",
+    "mobileNumber": "+1-555-1014",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "super.admin@company.com",
+    "joiningDate": "2024-01-01",
+    "department": "Administration",
+    "designation": "System Administrator",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "Super",
+    "profile_picture": "profile_pics/2026/02/Screenshot_2026-01-15_at_10.41.16PM.png",
+    "emergencyContactName": "Emergency Contact for Super",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.super@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 14,
+  "fields": {
+    "firstName": "HR",
+    "lastName": "Manager",
+    "employeeId": "HRM0015",
+    "gender": "Male",
+    "dateOfBirth": null,
+    "maritalStatus": "Single",
+    "personalEmail": "hrmanager@university.edu",
+    "mobileNumber": "+1-555-1015",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": "hr.manager@company.com",
+    "joiningDate": "2024-01-01",
+    "department": "Human Resources",
+    "designation": "HR Manager",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "School of Engineering",
+    "reportingManager": null,
+    "officeLocation": "Building A, Floor 3",
+    "workPhone": "+1-555-0100",
+    "probationPeriod": 0,
+    "highestQualification": "",
+    "experienceYears": 0,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "HR",
+    "profile_picture": "",
+    "emergencyContactName": "Emergency Contact for HR",
+    "emergencyContactRelationship": "Spouse",
+    "emergencyContactPhone": "+1-555-9999",
+    "emergencyContactEmail": "emergency.hr@email.com"
+  }
+},
+{
+  "model": "employee_management.employee",
+  "pk": 17,
+  "fields": {
+    "firstName": "Sabir",
+    "lastName": "Bagwan",
+    "employeeId": "EMP2004",
+    "gender": "Male",
+    "dateOfBirth": "1991-08-24",
+    "maritalStatus": "Single",
+    "personalEmail": "sabirbagwan4@gmail.com",
+    "mobileNumber": "+91 9960615786",
+    "presentAddress": "",
+    "permanentAddress": "",
+    "workEmail": null,
+    "joiningDate": "2026-02-04",
+    "department": "Faculty of Engineering",
+    "designation": "Assistant Professor",
+    "department_new": null,
+    "designation_new": null,
+    "employmentStatus": "Active",
+    "employeeType": "Full Time Employees",
+    "schoolFaculty": "",
+    "reportingManager": null,
+    "officeLocation": "",
+    "workPhone": "",
+    "probationPeriod": 1,
+    "highestQualification": "",
+    "experienceYears": 2,
+    "previousInstitution": "",
+    "bankAccountNumber": "",
+    "ifscCode": "",
+    "panNumber": "",
+    "preferredName": "",
+    "profile_picture": "",
+    "emergencyContactName": "",
+    "emergencyContactRelationship": "",
+    "emergencyContactPhone": "",
+    "emergencyContactEmail": ""
+  }
+},
+{
+  "model": "attendance_leave.attendancerecord",
+  "pk": 8,
+  "fields": {
+    "employee": 1,
+    "date": "2026-02-06",
+    "check_in": "13:50:10.338",
+    "check_out": "13:50:41.762",
+    "check_in_latitude": "19.055352",
+    "check_in_longitude": "72.882757",
+    "check_in_address": "Shiv Shrusti, Vasantarao Naik Marg, Shivshrushti, Kurla East, L Ward, Zone 5, Mumbai, Mumbai Suburban, Maharashtra, 400024, India",
+    "check_out_latitude": "19.055352",
+    "check_out_longitude": "72.882757",
+    "check_out_address": "Shiv Shrusti, Vasantarao Naik Marg, Shivshrushti, Kurla East, L Ward, Zone 5, Mumbai, Mumbai Suburban, Maharashtra, 400024, India",
+    "status": "Present",
+    "work_hours": "0.01",
+    "notes": "",
+    "created_at": "2026-02-06T13:50:11.422Z",
+    "updated_at": "2026-02-06T13:50:45.272Z"
+  }
+},
+{
+  "model": "attendance_leave.attendancerecord",
+  "pk": 9,
+  "fields": {
+    "employee": 1,
+    "date": "2026-02-07",
+    "check_in": "03:58:50.037",
+    "check_out": null,
+    "check_in_latitude": "19.033200",
+    "check_in_longitude": "73.064883",
+    "check_in_address": "Location captured (Address unavailable)",
+    "check_out_latitude": null,
+    "check_out_longitude": null,
+    "check_out_address": null,
+    "status": "Present",
+    "work_hours": "0.00",
+    "notes": "",
+    "created_at": "2026-02-07T03:58:50.048Z",
+    "updated_at": "2026-02-07T03:58:50.048Z"
+  }
+},
+{
+  "model": "attendance_leave.attendancebreak",
+  "pk": 5,
+  "fields": {
+    "attendance_record": 8,
+    "break_start": "13:50:21.866",
+    "break_end": "13:50:36.622",
+    "duration": "0.00"
+  }
+},
+{
+  "model": "attendance_leave.attendancebreak",
+  "pk": 6,
+  "fields": {
+    "attendance_record": 9,
+    "break_start": "05:26:14.968",
+    "break_end": "05:26:21.021",
+    "duration": "0.00"
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 1,
+  "fields": {
+    "employee": 1,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 2,
+  "fields": {
+    "employee": 1,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 3,
+  "fields": {
+    "employee": 1,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 4,
+  "fields": {
+    "employee": 2,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 5,
+  "fields": {
+    "employee": 2,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 6,
+  "fields": {
+    "employee": 2,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 7,
+  "fields": {
+    "employee": 4,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 8,
+  "fields": {
+    "employee": 4,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 9,
+  "fields": {
+    "employee": 4,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 10,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 11,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 12,
+  "fields": {
+    "employee": 3,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 13,
+  "fields": {
+    "employee": 5,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 14,
+  "fields": {
+    "employee": 5,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 15,
+  "fields": {
+    "employee": 5,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 16,
+  "fields": {
+    "employee": 7,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 17,
+  "fields": {
+    "employee": 7,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 18,
+  "fields": {
+    "employee": 7,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 19,
+  "fields": {
+    "employee": 8,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 20,
+  "fields": {
+    "employee": 8,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 21,
+  "fields": {
+    "employee": 8,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 22,
+  "fields": {
+    "employee": 9,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 23,
+  "fields": {
+    "employee": 9,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 24,
+  "fields": {
+    "employee": 9,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 25,
+  "fields": {
+    "employee": 10,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 26,
+  "fields": {
+    "employee": 10,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 27,
+  "fields": {
+    "employee": 10,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 28,
+  "fields": {
+    "employee": 11,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 29,
+  "fields": {
+    "employee": 11,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 30,
+  "fields": {
+    "employee": 11,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 31,
+  "fields": {
+    "employee": 12,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 32,
+  "fields": {
+    "employee": 12,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 33,
+  "fields": {
+    "employee": 12,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 34,
+  "fields": {
+    "employee": 13,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 35,
+  "fields": {
+    "employee": 13,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 36,
+  "fields": {
+    "employee": 13,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 37,
+  "fields": {
+    "employee": 14,
+    "leave_type": "Casual",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 38,
+  "fields": {
+    "employee": 14,
+    "leave_type": "Sick",
+    "total": 10,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 39,
+  "fields": {
+    "employee": 14,
+    "leave_type": "Vacation",
+    "total": 15,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 40,
+  "fields": {
+    "employee": 17,
+    "leave_type": "Casual",
+    "total": 0,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 41,
+  "fields": {
+    "employee": 17,
+    "leave_type": "Sick",
+    "total": 0,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.leavebalance",
+  "pk": 42,
+  "fields": {
+    "employee": 17,
+    "leave_type": "Vacation",
+    "total": 0,
+    "used": 0
+  }
+},
+{
+  "model": "leave_management.holiday",
+  "pk": 1,
+  "fields": {
+    "name": "New Year's Day",
+    "date": "2025-01-01",
+    "description": "New Year celebration"
+  }
+},
+{
+  "model": "leave_management.holiday",
+  "pk": 2,
+  "fields": {
+    "name": "Independence Day",
+    "date": "2026-07-04",
+    "description": "National holiday"
+  }
+},
+{
+  "model": "leave_management.holiday",
+  "pk": 3,
+  "fields": {
+    "name": "Christmas",
+    "date": "2025-12-25",
+    "description": "Christmas celebration"
+  }
+},
+{
+  "model": "leave_management.holiday",
+  "pk": 4,
+  "fields": {
+    "name": "Thanksgiving",
+    "date": "2026-01-17",
+    "description": "Thanksgiving holiday"
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 1,
+  "fields": {
+    "employee": 1,
+    "start_date": "2025-10-29",
+    "end_date": "2025-11-06",
+    "leave_type": "Casual Leave",
+    "status": "Approved",
+    "reason": ""
+  }
+},
+{
+  "model": "leave_management.leaverequest",
+  "pk": 2,
+  "fields": {
+    "employee": 2,
+    "start_date": "2025-11-11",
+    "end_date": "2025-11-21",
+    "leave_type": "Casual Leave",
+    "status": "Pending",
+    "reason": "International Conference"
+  }
+}
+]
