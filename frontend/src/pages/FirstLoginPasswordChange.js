@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { usePermission } from '../contexts/PermissionContext';
+import { getApiUrl } from '../utils/api';
 
 const FirstLoginPasswordChange = () => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const FirstLoginPasswordChange = () => {
       const token = localStorage.getItem('authToken');
       
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/auth/first-login-password-change/',
+        getApiUrl('/auth/first-login-password-change/'),
         {
           old_password: oldPassword,
           new_password: newPassword,

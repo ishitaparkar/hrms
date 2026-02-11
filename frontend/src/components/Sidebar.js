@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import logoImage from '../assets/logo.png';
+import logoImage from '../assets/logo_main.jpg';
 import { usePermission } from '../contexts/PermissionContext';
 import SidebarProfile from './SidebarProfile';
 
@@ -47,12 +47,12 @@ const Sidebar = () => {
   const isSuperAdmin = hasRole('Super Admin');
   const isHRManager = hasRole('HR Manager');
   const isEmployee = hasRole('Employee');
-  
+
   const canViewEmployees = isSuperAdmin || isHRManager || isEmployee;
-  const canViewRecruitment = isSuperAdmin || isHRManager || isEmployee;
+  const canViewRecruitment = isSuperAdmin || isHRManager;
   const canViewAnnouncements = true;
-  const canViewResignation = isSuperAdmin || isHRManager || isEmployee;
-  
+  const canViewResignation = isSuperAdmin || isHRManager;
+
   const canManageRoles = isSuperAdmin;
   const canViewAuditLogs = isSuperAdmin;
   const canViewSettings = isSuperAdmin;
@@ -64,13 +64,13 @@ const Sidebar = () => {
 
       {/* 1. FIXED HEADER (Logo) */}
       <div className="p-6 flex items-center space-x-3 flex-shrink-0 bg-white">
-        <img src={logoImage} alt="Logo" className="w-9 h-9 object-contain" />
+        <img src={logoImage} alt="University HRMS Logo" className="w-10 h-10 object-contain" />
         <h1 className="text-xl font-bold text-gray-800 tracking-tight">University HRMS</h1>
       </div>
 
       {/* 2. SCROLLABLE NAVIGATION AREA */}
       <nav className="flex-1 px-3 py-2 overflow-y-auto custom-scroll">
-        
+
         {/* Dashboard */}
         <NavLink to="/dashboard" className={navLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>
           <span className="material-icons mr-3 text-[20px]">dashboard</span> Dashboard
@@ -79,23 +79,23 @@ const Sidebar = () => {
         {/* My Space Dropdown */}
         {canViewEmployees && (
           <div className="mb-1">
-            <button 
-              onClick={() => setIsMySpaceOpen(!isMySpaceOpen)} 
+            <button
+              onClick={() => setIsMySpaceOpen(!isMySpaceOpen)}
               className={`${navLinkClass} w-full justify-between`}
             >
               <div className="flex items-center">
-                <span className="material-icons mr-3 text-[20px]">person</span> 
+                <span className="material-icons mr-3 text-[20px]">person</span>
                 My Space
               </div>
               <span className="material-icons text-lg text-gray-400 transition-transform duration-200" style={{ transform: isMySpaceOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>expand_more</span>
             </button>
-            
+
             {isMySpaceOpen && (
               <div className="pl-7 space-y-1 border-l-2 border-gray-100 ml-4 my-1">
                 <NavLink to="/profile" className={subNavLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>Profile</NavLink>
-                <NavLink to="/my-attendance" className={subNavLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>Attendance</NavLink>
+                <NavLink to="/attendance" className={subNavLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>Attendance</NavLink>
                 <NavLink to="/my-leave" className={subNavLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>Leaves</NavLink>
-                <NavLink to="/time-tracker" className={subNavLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>Time Tracker</NavLink>
+
                 <NavLink to="/employee-assets" className={subNavLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>Assets</NavLink>
                 <NavLink to="/my-performance" className={subNavLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>Performance</NavLink>
                 <NavLink to="/payroll" className={subNavLinkClass} style={({ isActive }) => isActive ? activeStyle : undefined}>Payroll</NavLink>
@@ -141,12 +141,12 @@ const Sidebar = () => {
             </NavLink>
 
             <div className="mb-1">
-              <button 
-                onClick={() => setIsEmployeeOpen(!isEmployeeOpen)} 
+              <button
+                onClick={() => setIsEmployeeOpen(!isEmployeeOpen)}
                 className={`${navLinkClass} w-full justify-between`}
               >
                 <div className="flex items-center">
-                  <span className="material-icons mr-3 text-[20px]">business_center</span> 
+                  <span className="material-icons mr-3 text-[20px]">business_center</span>
                   Employee Mgmt
                 </div>
                 <span className="material-icons text-lg text-gray-400 transition-transform duration-200" style={{ transform: isEmployeeOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>expand_more</span>
@@ -187,14 +187,14 @@ const Sidebar = () => {
 
       {/* 3. FIXED BOTTOM SECTION (Profile & Logout) */}
       <div className="mt-auto p-4 border-t border-gray-100 bg-white">
-        
+
         <SidebarProfile />
 
-        <button 
+        <button
           onClick={handleLogout}
           className="flex items-center w-full px-4 py-2.5 mt-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 group"
         >
-          <span className="material-icons mr-3 text-[20px] group-hover:translate-x-1 transition-transform">logout</span> 
+          <span className="material-icons mr-3 text-[20px] group-hover:translate-x-1 transition-transform">logout</span>
           Logout
         </button>
       </div>

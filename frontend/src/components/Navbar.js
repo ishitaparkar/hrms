@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { usePermission } from '../contexts/PermissionContext';
+import logoImage from '../assets/logo_main.jpg';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Navbar = () => {
     clearAuthData();
     navigate('/');
   };
-  
+
   // Get primary role for display (highest priority role)
   const getPrimaryRole = () => {
     if (hasRole('Super Admin')) return 'Super Admin';
@@ -27,9 +28,9 @@ const Navbar = () => {
     if (hasRole('Employee')) return 'Employee';
     return null;
   };
-  
+
   const primaryRole = getPrimaryRole();
-  
+
   // Helper function to get role badge color
   const getRoleBadgeColor = (role) => {
     switch (role) {
@@ -49,31 +50,29 @@ const Navbar = () => {
   return (
     <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-10 py-3 bg-white dark:bg-background-dark">
       <div className="flex items-center gap-4 text-[#0d141b] dark:text-white">
-        <div className="size-6 text-primary" aria-hidden="true">
-          <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7l10 5 10-5-10-5zm0 7.5L4.5 6.25 12 3l7.5 3.25L12 9.5zm-1 2.5v5.5l-8-4v-5l8 4zm2 5.5v-5.5l8-4v5l-8 4z"></path>
-          </svg>
+        <div className="size-8 flex items-center justify-center">
+          <img src={logoImage} alt="University HRMS Logo" className="w-full h-full object-contain" />
         </div>
         <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]">University HRMS</h2>
       </div>
       <div className="flex flex-1 justify-end gap-8">
         <nav className="flex items-center gap-9 text-sm font-medium leading-normal" aria-label="Secondary navigation">
-          <NavLink 
-            to="/dashboard" 
+          <NavLink
+            to="/dashboard"
             style={({ isActive }) => isActive ? activeLinkStyle : undefined}
             aria-current={({ isActive }) => isActive ? "page" : undefined}
           >
             Dashboard
           </NavLink>
-          <NavLink 
-            to="/employees" 
+          <NavLink
+            to="/employees"
             style={({ isActive }) => isActive ? activeLinkStyle : undefined}
             aria-current={({ isActive }) => isActive ? "page" : undefined}
           >
             Staff Directory
           </NavLink>
-          <button 
-            onClick={handleLogout} 
+          <button
+            onClick={handleLogout}
             className="hover:text-primary cursor-pointer bg-transparent border-0 text-sm font-medium"
             aria-label="Logout from application"
           >
@@ -82,7 +81,7 @@ const Navbar = () => {
         </nav>
         <div className="flex items-center gap-3">
           {primaryRole && (
-            <span 
+            <span
               className={`px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(primaryRole)}`}
               role="status"
               aria-label={`Current role: ${primaryRole}`}
@@ -90,8 +89,8 @@ const Navbar = () => {
               {primaryRole}
             </span>
           )}
-          <div 
-            className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" 
+          <div
+            className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
             style={{ backgroundImage: 'url("https://randomuser.me/api/portraits/men/75.jpg")' }}
             role="img"
             aria-label="User profile picture"

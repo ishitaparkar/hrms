@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PhoneInput from '../components/ui/PhoneInput';
+import { getApiUrl } from '../utils/api';
 
 const SectionTitle = ({ title }) => (
   <h2 className="text-lg font-semibold text-primary mb-6 col-span-full">{title}</h2>
@@ -83,7 +84,7 @@ const AddEmployeePage = () => {
         const token = localStorage.getItem('authToken');
         
         // Call the backend OCR endpoint
-        const response = await axios.post('http://127.0.0.1:8000/api/parse-document/', uploadData, {
+        const response = await axios.post(getApiUrl('/parse-document/'), uploadData, {
             headers: { 
               'Authorization': `Token ${token}`, 
               'Content-Type': 'multipart/form-data' 
@@ -290,8 +291,7 @@ const AddEmployeePage = () => {
         mobileNumber: formData.countryCode + ' ' + formData.mobileNumber.replace(/\D/g, ''),
       };
       
-      // Adjust URL port if needed (assuming 8000 for Django)
-      await axios.post('http://127.0.0.1:8000/api/employees/', submissionData, {
+      await axios.post(getApiUrl('/employees/'), submissionData, {
           headers: {
             'Authorization': `Token ${localStorage.getItem('authToken')}`
           }

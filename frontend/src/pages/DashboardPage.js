@@ -3,50 +3,14 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { usePermission } from '../contexts/PermissionContext';
 import PersonalizedGreeting from '../components/PersonalizedGreeting';
+import { getApiUrl } from '../utils/api';
 
-// Import Chart.js components and register them.
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Bar, Doughnut } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 // --- CHART CONFIGURATIONS ---
+// For now, removing unused assignments.
 
-const barChartData = {
-    labels: ['Arts & Sci', 'Engineering', 'Medicine', 'Business', 'Law', 'Admin'],
-    datasets: [{
-        label: '# of Employees',
-        data: [450, 320, 280, 210, 150, 380],
-        backgroundColor: 'rgba(59, 130, 246, 0.7)',
-        borderColor: 'rgba(59, 130, 246, 1)',
-        borderWidth: 1,
-        borderRadius: 6,
-    }]
-};
 
-const doughnutChartData = {
-    labels: ['Faculty', 'Staff', 'Student Workers', 'Adjuncts'],
-    datasets: [{
-        label: 'Employee Distribution',
-        data: [1250, 850, 256, 100],
-        backgroundColor: ['rgba(79, 70, 229, 0.8)', 'rgba(59, 130, 246, 0.8)', 'rgba(16, 185, 129, 0.8)', 'rgba(245, 158, 11, 0.8)'],
-        borderColor: '#FFFFFF',
-        borderWidth: 4,
-    }]
-};
-
-const chartOptions = {
-    bar: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
-    },
-    doughnut: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom' } },
-        cutout: '70%',
-    }
-};
 
 // --- MAIN DASHBOARD PAGE COMPONENT ---
 const DashboardPage = () => {
@@ -54,58 +18,72 @@ const DashboardPage = () => {
     const isEmployee = hasRole('Employee');
     const isHRManager = hasRole('HR Manager');
     const isSuperAdmin = hasRole('Super Admin');
-    
+
     const [employeeData, setEmployeeData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    
-    // Fetch employee data for personalized dashboard
+
+    // Dynamic Data State
+    const [announcements, setAnnouncements] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [stats, setStats] = useState(null);
+
+    // Fetch Data
     useEffect(() => {
-        const fetchEmployeeData = async () => {
-            if (isEmployee && !isHRManager && !isSuperAdmin) {
-                try {
-                    const token = localStorage.getItem('authToken');
-                    const userResponse = await axios.get('http://127.0.0.1:8000/api/auth/me/', {
-                        headers: { 'Authorization': `Token ${token}` }
-                    });
+        const fetchData = async () => {
+            const token = localStorage.getItem('authToken');
+            const headers = { 'Authorization': `Token ${token}` };
+
+            try {
+                // Fetch Announcements, Events, and Stats
+                const [annResponse, eventResponse] = await Promise.all([
+                    axios.get(getApiUrl('/dashboard/announcements/'), { headers }),
+                    axios.get(getApiUrl('/dashboard/events/'), { headers })
+                ]);
+                setAnnouncements(annResponse.data);
+                setEvents(eventResponse.data);
+
+                // Fetch Employee Data & Stats if needed
+                if (isEmployee && !isHRManager && !isSuperAdmin) {
+                    const userResponse = await axios.get(getApiUrl('/auth/me/'), { headers });
                     const employeeId = userResponse.data.employee_id;
-                    
-                    const empResponse = await axios.get(`http://127.0.0.1:8000/api/employees/${employeeId}/`, {
-                        headers: { 'Authorization': `Token ${token}` }
-                    });
-                    
+
+                    const [empResponse, statsResponse] = await Promise.all([
+                        axios.get(getApiUrl(`/employees/${employeeId}/`), { headers }),
+                        axios.get(getApiUrl('/dashboard/stats/'), { headers })
+                    ]);
+
                     setEmployeeData(empResponse.data);
-                } catch (error) {
-                    console.error("Error fetching employee data:", error);
-                } finally {
-                    setIsLoading(false);
+                    setStats(statsResponse.data);
                 }
-            } else {
+            } catch (error) {
+                console.error("Error fetching dashboard data:", error);
+            } finally {
                 setIsLoading(false);
             }
         };
-        
-        fetchEmployeeData();
+
+        fetchData();
     }, [isEmployee, isHRManager, isSuperAdmin]);
-    
+
     // Show employee dashboard for employees
     if (isEmployee && !isHRManager && !isSuperAdmin) {
-        return <EmployeeDashboard employeeData={employeeData} isLoading={isLoading} />;
+        return <EmployeeDashboard employeeData={employeeData} isLoading={isLoading} announcements={announcements} events={events} stats={stats} />;
     }
-    
+
     // Show HR Manager dashboard for HR Managers
     if (isHRManager || isSuperAdmin) {
-        return <HRManagerDashboard />;
+        return <HRManagerDashboard announcements={announcements} events={events} />;
     }
-    
+
     // Fallback (shouldn't reach here)
     return null;
 };
 
 
 // --- HR MANAGER DASHBOARD COMPONENT ---
-const HRManagerDashboard = () => {
+const HRManagerDashboard = ({ announcements, events }) => {
     const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    
+
     return (
         <main className="px-4 md:px-10 py-8 flex-1 bg-background-light dark:bg-background-dark">
             <div className="max-w-7xl mx-auto">
@@ -119,38 +97,10 @@ const HRManagerDashboard = () => {
 
                 {/* HR Stats Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-4">
-                    <HRStatCard 
-                        icon="groups" 
-                        title="Total Employees" 
-                        value="2,456" 
-                        subtitle="+12 this month"
-                        color="blue"
-                        link="/employees"
-                    />
-                    <HRStatCard 
-                        icon="pending_actions" 
-                        title="Pending Leave Requests" 
-                        value="23" 
-                        subtitle="Requires approval"
-                        color="yellow"
-                        link="/leave-tracker"
-                    />
-                    <HRStatCard 
-                        icon="work" 
-                        title="Open Positions" 
-                        value="8" 
-                        subtitle="Active recruitment"
-                        color="purple"
-                        link="/recruitment"
-                    />
-                    <HRStatCard 
-                        icon="assignment_return" 
-                        title="Pending Resignations" 
-                        value="3" 
-                        subtitle="Awaiting processing"
-                        color="red"
-                        link="/resignation"
-                    />
+                    <HRStatCard icon="groups" title="Total Employees" value="2,456" subtitle="+12 this month" color="blue" link="/employees" />
+                    <HRStatCard icon="pending_actions" title="Pending Leave Requests" value="23" subtitle="Requires approval" color="yellow" link="/leave-tracker" />
+                    <HRStatCard icon="work" title="Open Positions" value="8" subtitle="Active recruitment" color="purple" link="/recruitment" />
+                    <HRStatCard icon="assignment_return" title="Pending Resignations" value="3" subtitle="Awaiting processing" color="red" link="/resignation" />
                 </div>
 
                 {/* Quick Actions */}
@@ -168,83 +118,56 @@ const HRManagerDashboard = () => {
 
                 {/* Two Column Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Recent HR Activity */}
+                    {/* Recent Human Resource Activity -> Now Dynamic Announcements */}
                     <div className="lg:col-span-2 p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-sm">
-                        <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark mb-4">Recent HR Activity</h3>
-                        <div className="space-y-4">
-                            <ActivityItem 
-                                icon="person_add" 
-                                title="New Employee Onboarded" 
-                                description="John Smith joined as Assistant Professor in CS Department"
-                                time="2 hours ago"
-                                color="green"
-                            />
-                            <ActivityItem 
-                                icon="check_circle" 
-                                title="Leave Request Approved" 
-                                description="Approved 5 leave requests for November"
-                                time="4 hours ago"
-                                color="blue"
-                            />
-                            <ActivityItem 
-                                icon="receipt_long" 
-                                title="Payroll Processed" 
-                                description="October 2025 payroll completed for 2,456 employees"
-                                time="1 day ago"
-                                color="purple"
-                            />
-                            <ActivityItem 
-                                icon="work" 
-                                title="Position Filled" 
-                                description="Lab Technician position filled - Physics Department"
-                                time="2 days ago"
-                                color="yellow"
-                            />
+                        <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark mb-4">Announcements & Activity</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {announcements.length > 0 ? (
+                                announcements.map((ann, index) => (
+                                    <ActivityCard
+                                        key={ann.id || index}
+                                        icon={ann.icon || "campaign"}
+                                        title={ann.title}
+                                        description={ann.description}
+                                        date={new Date(ann.created_at).toLocaleDateString()}
+                                        color={ann.color || "blue"}
+                                    />
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-500">No recent announcements.</p>
+                            )}
                         </div>
                     </div>
 
                     {/* Pending Tasks & Quick Stats */}
                     <div className="space-y-6">
-                        {/* Pending Tasks */}
+                        {/* Pending Tasks - Keep static for now or wire up later */}
                         <div className="p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-sm">
                             <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark mb-4">Pending Tasks</h3>
                             <div className="space-y-3">
-                                <TaskItem 
-                                    icon="pending_actions" 
-                                    title="Leave Approvals" 
-                                    count="23" 
-                                    link="/leave-tracker"
-                                />
-                                <TaskItem 
-                                    icon="assignment_return" 
-                                    title="Resignation Reviews" 
-                                    count="3" 
-                                    link="/resignation"
-                                />
-                                <TaskItem 
-                                    icon="work" 
-                                    title="Interview Schedules" 
-                                    count="12" 
-                                    link="/recruitment"
-                                />
-                                <TaskItem 
-                                    icon="inventory_2" 
-                                    title="Asset Requests" 
-                                    count="7" 
-                                    link="/employee-assets"
-                                />
+                                <TaskItem icon="pending_actions" title="Leave Approvals" count="23" link="/leave-tracker" />
+                                <TaskItem icon="assignment_return" title="Resignation Reviews" count="3" link="/resignation" />
+                                <TaskItem icon="work" title="Interview Schedules" count="12" link="/recruitment" />
+                                <TaskItem icon="inventory_2" title="Asset Requests" count="7" link="/employee-assets" />
                             </div>
                         </div>
 
-                        {/* Department Summary */}
+                        {/* Recent Events -> Now Dynamic */}
                         <div className="p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-sm">
-                            <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark mb-4">Department Summary</h3>
+                            <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark mb-4">Upcoming Events</h3>
                             <div className="space-y-3">
-                                <DepartmentItem dept="Engineering" count="450" />
-                                <DepartmentItem dept="Arts & Sciences" count="380" />
-                                <DepartmentItem dept="Medicine" count="320" />
-                                <DepartmentItem dept="Business" count="280" />
-                                <DepartmentItem dept="Others" count="1,026" />
+                                {events.length > 0 ? (
+                                    events.map((event, index) => (
+                                        <EventItem
+                                            key={event.id || index}
+                                            dateObj={new Date(event.date_time)}
+                                            title={event.title}
+                                            time={new Date(event.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        />
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500">No upcoming events.</p>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -253,6 +176,7 @@ const HRManagerDashboard = () => {
         </main>
     );
 };
+
 
 // HR Manager Dashboard Helper Components
 const HRStatCard = ({ icon, title, value, subtitle, color, link }) => {
@@ -263,7 +187,7 @@ const HRStatCard = ({ icon, title, value, subtitle, color, link }) => {
         red: 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400',
         green: 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400',
     };
-    
+
     return (
         <Link to={link} className="block">
             <div className="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark shadow-sm hover:shadow-md transition-shadow">
@@ -317,7 +241,7 @@ const OpenPositionsTable = () => {
         { title: 'Research Lab Technician', dept: 'Department of Biology', date: '2025-09-28', status: 'Interviewing' },
         { title: 'Librarian', dept: 'University Library', date: '2025-09-25', status: 'Closed' },
     ];
-    
+
     const getStatusBadge = (status) => {
         switch (status) {
             case 'Open': return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">{status}</span>;
@@ -354,147 +278,113 @@ const OpenPositionsTable = () => {
 };
 
 // --- EMPLOYEE DASHBOARD COMPONENT ---
-const EmployeeDashboard = ({ employeeData, isLoading }) => {
+const EmployeeDashboard = ({ employeeData, isLoading, announcements, events, stats }) => {
     if (isLoading) {
         return (
-            <main className="px-4 md:px-10 py-8 flex-1 bg-background-light dark:bg-background-dark">
+            <main className="px-4 md:px-10 py-8 flex-1 bg-gray-50 dark:bg-gray-900">
                 <div className="flex items-center justify-center h-96">
                     <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                        <p className="text-subtext-light">Loading your dashboard...</p>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <p className="text-gray-500">Loading your dashboard...</p>
                     </div>
                 </div>
             </main>
         );
     }
-    
+
     const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    
+
     return (
-        <main className="px-4 md:px-10 py-8 flex-1 bg-background-light dark:bg-background-dark">
+        <main className="px-4 md:px-10 py-8 flex-1 bg-gray-50 dark:bg-gray-900">
             <div className="max-w-7xl mx-auto">
-                {/* Welcome Header */}
-                <div className="mb-6">
-                    <h1 className="text-heading-light dark:text-heading-dark tracking-tight text-3xl font-bold">
-                        <PersonalizedGreeting variant="full" /> 👋
-                    </h1>
-                    <p className="text-text-light dark:text-text-dark text-sm">{currentDate}</p>
-                </div>
 
-                {/* Personal Stats Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-4">
-                    <EmployeeStatCard 
-                        icon="event_available" 
-                        title="Attendance This Month" 
-                        value="22/23 days" 
-                        subtitle="95.7% present"
-                        color="blue"
-                        link="/attendance"
-                    />
-                    <EmployeeStatCard 
-                        icon="beach_access" 
-                        title="Leave Balance" 
-                        value="12 days" 
-                        subtitle="3 pending requests"
-                        color="green"
-                        link="/leave-tracker"
-                    />
-                    <EmployeeStatCard 
-                        icon="schedule" 
-                        title="Hours This Week" 
-                        value="38.5 hrs" 
-                        subtitle="Target: 40 hrs"
-                        color="purple"
-                        link="/time-tracker"
-                    />
-                    <EmployeeStatCard 
-                        icon="grade" 
-                        title="Performance Score" 
-                        value="4.5/5.0" 
-                        subtitle="Excellent"
-                        color="yellow"
-                        link="/appraisal"
-                    />
-                </div>
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+                            <PersonalizedGreeting variant="full" />
+                        </h1>
+                        <p className="text-gray-500 text-sm mt-1">{currentDate}</p>
+                    </div>
 
-                {/* Quick Actions */}
-                <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-heading-light dark:text-heading-dark mb-4">Quick Actions</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                        <QuickActionCard icon="event_note" label="Request Leave" link="/request-leave" />
-                        <QuickActionCard icon="receipt" label="View Payroll" link="/payroll" />
-                        <QuickActionCard icon="person" label="My Profile" link="/my-profile" />
-                        <QuickActionCard icon="inventory_2" label="My Assets" link="/employee-assets" />
-                        <QuickActionCard icon="work" label="Job Opportunities" link="/recruitment" />
-                        <QuickActionCard icon="campaign" label="Announcements" link="/announcement" />
+                    {/* Search / Actions Placeholder */}
+                    <div className="mt-4 md:mt-0">
+                        {/* Can add search bar or quick actions here if needed */}
                     </div>
                 </div>
 
-                {/* Two Column Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Recent Activity */}
-                    <div className="lg:col-span-2 p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-sm">
-                        <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark mb-4">Recent Activity</h3>
-                        <div className="space-y-4">
-                            <ActivityItem 
-                                icon="check_circle" 
-                                title="Leave Request Approved" 
-                                description="Your casual leave for Nov 20-22 has been approved"
-                                time="2 hours ago"
-                                color="green"
-                            />
-                            <ActivityItem 
-                                icon="receipt_long" 
-                                title="Payslip Generated" 
-                                description="October 2025 salary slip is now available"
-                                time="1 day ago"
-                                color="blue"
-                            />
-                            <ActivityItem 
-                                icon="campaign" 
-                                title="New Announcement" 
-                                description="Annual performance review cycle has started"
-                                time="3 days ago"
-                                color="purple"
-                            />
-                            <ActivityItem 
-                                icon="inventory_2" 
-                                title="Asset Assigned" 
-                                description="New laptop (LP-1234) has been assigned to you"
-                                time="1 week ago"
-                                color="yellow"
-                            />
-                        </div>
+                {/* Stats Row */}
+                <div className="mb-8">
+                    <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Today's Stats</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <EmployeeStatCard
+                            title="Attendance"
+                            value={stats?.attendance?.value || "0 days"}
+                            subtitle={stats?.attendance?.subtitle || "No data"}
+                            borderColor="border-blue-500"
+                        />
+                        <EmployeeStatCard
+                            title="Leave Balance"
+                            value={stats?.leave?.value || "0 days"}
+                            subtitle={stats?.leave?.subtitle || "No pending requests"}
+                            borderColor="border-green-500"
+                        />
+                        <EmployeeStatCard
+                            title="Hours This Week"
+                            value={stats?.hours?.value || "0 hrs"}
+                            subtitle={stats?.hours?.subtitle || "This week"}
+                            borderColor="border-yellow-500"
+                        />
+                        <EmployeeStatCard
+                            title="Performance"
+                            value={stats?.performance?.value || "N/A"}
+                            subtitle={stats?.performance?.subtitle || "Latest Rating"}
+                            borderColor="border-purple-500"
+                        />
                     </div>
+                </div>
 
-                    {/* Upcoming Events & Profile Summary */}
-                    <div className="space-y-6">
-                        {/* Profile Summary */}
-                        <div className="p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-sm">
-                            <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark mb-4">Profile Summary</h3>
-                            {employeeData && (
-                                <div className="space-y-3">
-                                    <ProfileItem label="Employee ID" value={employeeData.employeeId} />
-                                    <ProfileItem label="Department" value={employeeData.department} />
-                                    <ProfileItem label="Designation" value={employeeData.designation} />
-                                    <ProfileItem label="Joining Date" value={employeeData.joiningDate} />
-                                    <Link 
-                                        to="/my-profile" 
-                                        className="block mt-4 text-center text-primary hover:underline text-sm font-medium"
-                                    >
-                                        View Full Profile →
-                                    </Link>
-                                </div>
+                {/* Main Content Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    {/* Left Column: Announcements (Card Style) */}
+                    <div className="lg:col-span-2">
+                        <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Announcements</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {announcements && announcements.length > 0 ? (
+                                announcements.map((ann, index) => (
+                                    <ActivityCard
+                                        key={ann.id || index}
+                                        icon={ann.icon || "campaign"}
+                                        title={ann.title}
+                                        description={ann.description}
+                                        date={new Date(ann.created_at).toLocaleDateString()}
+                                        color={ann.color || "blue"}
+                                    />
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-500 col-span-2">No recent announcements.</p>
                             )}
                         </div>
+                    </div>
 
-                        {/* Upcoming Events */}
-                        <div className="p-6 rounded-xl bg-card-light dark:bg-card-dark shadow-sm">
-                            <h3 className="text-lg font-semibold text-heading-light dark:text-heading-dark mb-4">Upcoming Events</h3>
-                            <div className="space-y-3">
-                                <EventItem date="Nov 20" title="Team Meeting" time="10:00 AM" />
-                                <EventItem date="Nov 25" title="Performance Review" time="2:00 PM" />
-                                <EventItem date="Dec 1" title="Holiday - University Day" time="All Day" />
+                    {/* Right Column: Events (List Style) */}
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Upcoming Events</h2>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+                            <div className="space-y-6">
+                                {events && events.length > 0 ? (
+                                    events.map((event, index) => (
+                                        <EventItem
+                                            key={event.id || index}
+                                            dateObj={new Date(event.date_time)}
+                                            title={event.title}
+                                            time={new Date(event.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        />
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500">No upcoming events.</p>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -505,28 +395,6 @@ const EmployeeDashboard = ({ employeeData, isLoading }) => {
 };
 
 // Employee Dashboard Helper Components
-const EmployeeStatCard = ({ icon, title, value, subtitle, color, link }) => {
-    const colorClasses = {
-        blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
-        green: 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400',
-        purple: 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
-        yellow: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400',
-    };
-    
-    return (
-        <Link to={link} className="block">
-            <div className="flex flex-col gap-2 rounded-xl p-6 bg-card-light dark:bg-card-dark shadow-sm hover:shadow-md transition-shadow">
-                <div className={`w-12 h-12 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-2`}>
-                    <span className="material-icons text-2xl">{icon}</span>
-                </div>
-                <p className="text-text-light dark:text-text-dark text-sm font-medium">{title}</p>
-                <p className="text-heading-light dark:text-heading-dark tracking-tight text-2xl font-bold">{value}</p>
-                <p className="text-subtext-light text-xs">{subtitle}</p>
-            </div>
-        </Link>
-    );
-};
-
 const QuickActionCard = ({ icon, label, link }) => (
     <Link to={link} className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card-light dark:bg-card-dark shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -536,23 +404,50 @@ const QuickActionCard = ({ icon, label, link }) => (
     </Link>
 );
 
-const ActivityItem = ({ icon, title, description, time, color }) => {
-    const colorClasses = {
-        green: 'bg-green-100 text-green-600',
-        blue: 'bg-blue-100 text-blue-600',
-        purple: 'bg-purple-100 text-purple-600',
-        yellow: 'bg-yellow-100 text-yellow-600',
-    };
-    
+// --- HELPER COMPONENTS (Redesigned) ---
+
+const EmployeeStatCard = ({ title, value, subtitle, borderColor }) => {
     return (
-        <div className="flex items-start gap-3 pb-4 border-b border-border-light dark:border-border-dark last:border-0">
-            <div className={`w-10 h-10 rounded-full ${colorClasses[color]} flex items-center justify-center flex-shrink-0`}>
-                <span className="material-icons text-lg">{icon}</span>
+        <div className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border-l-4 ${borderColor} transition-transform hover:-translate-y-1`}>
+            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">{title}</p>
+            <p className="text-gray-800 dark:text-white text-3xl font-bold mb-1">{value}</p>
+            <p className="text-gray-400 dark:text-gray-500 text-xs">{subtitle}</p>
+        </div>
+    );
+};
+
+const ActivityCard = ({ icon, title, description, date, color }) => {
+    const colorClasses = {
+        blue: 'bg-blue-100 text-blue-600',
+        green: 'bg-green-100 text-green-600',
+        yellow: 'bg-yellow-100 text-yellow-600',
+        purple: 'bg-purple-100 text-purple-600',
+        red: 'bg-red-100 text-red-600',
+    };
+
+    return (
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 flex flex-col h-full border border-transparent hover:border-gray-200 transition-colors">
+            <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full ${colorClasses[color] || colorClasses.blue} flex items-center justify-center`}>
+                        <span className="material-icons text-xl">{icon}</span>
+                    </div>
+                    <div>
+                        <h3 className="font-semibold text-gray-800 dark:text-white text-sm">{title}</h3>
+                        <span className="text-xs text-blue-500 font-medium">Announcement</span>
+                    </div>
+                </div>
+                <span className="text-xs text-gray-400">{date}</span>
             </div>
-            <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-heading-light dark:text-heading-dark">{title}</p>
-                <p className="text-xs text-subtext-light mt-1">{description}</p>
-                <p className="text-xs text-subtext-light mt-1">{time}</p>
+
+            <p className="text-sm text-gray-600 dark:text-gray-300 flex-1 mb-4 line-clamp-2">
+                {description}
+            </p>
+
+            <div className="flex items-center justify-end">
+                <button className="text-xs font-semibold text-gray-400 hover:text-blue-600 transition-colors">
+                    Read Details
+                </button>
             </div>
         </div>
     );

@@ -6,6 +6,7 @@ import PermissionError from '../components/PermissionError';
 import usePermissionError from '../hooks/usePermissionError';
 import { PageHeader, Card, Button } from '../components/ui';
 import ResendWelcomeEmailButton from '../components/ResendWelcomeEmailButton';
+import { getApiUrl } from '../utils/api';
 
 const EmployeeManagementPage = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const EmployeeManagementPage = () => {
     try {
       // We will fetch all employees at once for simplicity, as pagination was causing issues.
       // We will re-add pagination correctly later if needed.
-      const response = await axios.get('http://127.0.0.1:8000/api/employees/');
+      const response = await axios.get(getApiUrl('/employees/'));
       
       // Ensure the response is an array before setting it
       if (Array.isArray(response.data)) {
@@ -82,7 +83,7 @@ const EmployeeManagementPage = () => {
   const handleDelete = async (employeeId) => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/employees/${employeeId}/`);
+            await axios.delete(getApiUrl(`/employees/${employeeId}/`));
             alert('Employee deleted successfully.');
             fetchEmployees(); // Re-fetch the list to show the change
         } catch (error) {
@@ -231,7 +232,7 @@ const EmployeeManagementPage = () => {
                                     try {
                                       const token = localStorage.getItem('authToken');
                                       await axios.post(
-                                        `http://127.0.0.1:8000/api/auth/resend-welcome-email/${employee.id}/`,
+                                        getApiUrl(`/auth/resend-welcome-email/${employee.id}/`),
                                         {},
                                         { headers: { 'Authorization': `Token ${token}` } }
                                       );

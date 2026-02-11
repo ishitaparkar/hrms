@@ -4,6 +4,7 @@ import usePageTitle from '../hooks/usePageTitle';
 import DocumentsSection from '../components/profile/DocumentsSection';
 import NotificationsPreferences from '../components/profile/NotificationsPreferences';
 import axios from 'axios';
+import { getApiUrl, getMediaUrl } from '../utils/api';
 
 const ProfilePage = () => {
   const { roles, user } = usePermission();
@@ -22,11 +23,7 @@ const ProfilePage = () => {
   // --- HELPER: Fix Image URLs & Cache Busting ---
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
-    let url = imagePath;
-    // If it's a local path, prepend backend URL
-    if (!imagePath.startsWith('http')) {
-        url = `http://localhost:8000${imagePath}`; 
-    }
+    const url = getMediaUrl(imagePath);
     // Add timestamp to force browser to reload image after upload
     return `${url}?t=${new Date().getTime()}`; 
   };
@@ -59,7 +56,7 @@ const ProfilePage = () => {
         const token = localStorage.getItem('authToken');
         
         // 1. Fetch User Auth Data
-        const profileResponse = await fetch('http://localhost:8000/api/auth/me/', {
+        const profileResponse = await fetch(getApiUrl('/auth/me/'), {
           headers: {
             'Authorization': `Token ${token}`,
             'Content-Type': 'application/json',
@@ -72,7 +69,7 @@ const ProfilePage = () => {
           
           // 2. If Employee ID exists, fetch Employee Data
           if (data.employee_id) {
-            const employeeResponse = await fetch(`http://localhost:8000/api/employees/${data.employee_id}/`, {
+            const employeeResponse = await fetch(getApiUrl(`/employees/${data.employee_id}/`), {
               headers: {
                 'Authorization': `Token ${token}`,
                 'Content-Type': 'application/json',
@@ -127,7 +124,7 @@ const ProfilePage = () => {
       // --- FIX APPLIED: REMOVED 'Content-Type' HEADER ---
       // Axios/Browser sets the correct multipart boundary automatically
       const response = await axios.patch(
-        `http://localhost:8000/api/employees/${employeeData.id}/`, 
+        getApiUrl(`/employees/${employeeData.id}/`), 
         formData, 
         {
           headers: {
@@ -162,7 +159,7 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem('authToken');
       await axios.patch(
-        `http://localhost:8000/api/employees/${employeeData.id}/`, 
+        getApiUrl(`/employees/${employeeData.id}/`), 
         { profile_picture: null }, 
         {
           headers: {

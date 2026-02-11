@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { usePermission } from '../contexts/PermissionContext';
+import { getApiUrl } from '../utils/api';
+import './LoginPage.css';
+import logoImage from '../assets/logo_main.jpg';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -18,19 +21,17 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/auth/login/', {
+      const response = await axios.post(getApiUrl('/auth/login/'), {
         username: username,
         password: password,
       });
 
       console.log("Login successful:", response.data);
-      
-      // Store token
+
       const token = response.data.token;
       localStorage.setItem('authToken', token);
       axios.defaults.headers.common['Authorization'] = `Token ${token}`;
-      
-      // Store roles, permissions, and department using PermissionContext
+
       setAuthData({
         roles: response.data.roles || [],
         permissions: response.data.permissions || [],
@@ -43,8 +44,7 @@ const LoginPage = () => {
         employee_id: response.data.employee_id,
         requires_password_change: response.data.requires_password_change,
       });
-      
-      // Check if user needs to change password on first login
+
       if (response.data.requires_password_change) {
         navigate('/first-login-password-change');
       } else {
@@ -60,26 +60,39 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background-light dark:bg-background-dark">
-      <div className="w-full max-w-md p-8 space-y-8 bg-card-light dark:bg-card-dark rounded-lg shadow-lg">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-text-light dark:text-text-dark">
-            University HRMS Portal
-          </h2>
+    <div className="flex min-h-screen bg-white font-sans">
+      {/* LEFT SIDE: Logo instead of Background Image */}
+      <div className="hidden md:flex md:w-1/2 lg:w-3/5 bg-white items-center justify-center p-12 border-r border-gray-100">
+        <div className="flex flex-col items-center justify-center">
+          <img
+            src={logoImage}
+            alt="University Logo"
+            className="max-w-md w-full object-contain drop-shadow-sm"
+          />
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">
-              {error}
-            </div>
-          )}
-          
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-subtext-light dark:text-subtext-dark">
-                Username
-              </label>
-              <div className="mt-1">
+      </div>
+
+      {/* RIGHT SIDE: Login Form */}
+      <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col justify-center items-center p-8 bg-white overflow-y-auto">
+        <div className="w-full max-w-md space-y-8">
+
+          {/* Header */}
+          <div className="text-left">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Login to University HRMS</h2>
+            <p className="mt-2 text-sm text-gray-500">Please enter your details to continue.</p>
+          </div>
+
+          {/* Form */}
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            {error && (
+              <div className="p-3 bg-red-50 text-red-700 border border-red-100 rounded-md text-sm">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="username" className="sr-only">Username</label>
                 <input
                   id="username"
                   name="username"
@@ -88,16 +101,12 @@ const LoginPage = () => {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md"
-                  placeholder="Enter your admin username"
+                  className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Email or Username"
                 />
               </div>
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-subtext-light dark:text-subtext-dark">
-                Password
-              </label>
-              <div className="mt-1">
+              <div>
+                <label htmlFor="password" className="sr-only">Password</label>
                 <input
                   id="password"
                   name="password"
@@ -105,24 +114,67 @@ const LoginPage = () => {
                   autoComplete="current-password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)} // <-- THIS LINE IS NOW CORRECT
-                  className="w-full px-3 py-2 border rounded-md"
-                  placeholder="••••••••"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Password"
                 />
               </div>
             </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 transition-colors"
+              >
+                {isLoading ? 'Signing In...' : 'Continue'}
+              </button>
+            </div>
+          </form>
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or</span>
+            </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-600 disabled:bg-gray-400"
-            >
-              {isLoading ? 'Signing In...' : 'Sign in'}
+          {/* Social / Alternative Logins (Placeholders) */}
+          <div className="space-y-3">
+            <button type="button" className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              <span className="material-icons text-gray-400 mr-2 text-lg">smartphone</span>
+              Continue with Mobile
+            </button>
+            <button type="button" className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              <img src="https://www.svgrepo.com/show/355117/microsoft.svg" alt="Microsoft" className="h-5 w-5 mr-2" />
+              Continue with Microsoft
+            </button>
+            <button type="button" className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="h-5 w-5 mr-2" />
+              Continue with Google
             </button>
           </div>
-        </form>
+
+          {/* Footer App Badges (Visual only) */}
+          <div className="pt-8">
+            <div className="flex justify-center space-x-4">
+              {/* Placeholders for App Store buttons */}
+              <div className="h-10 w-32 bg-black rounded-md flex items-center justify-center text-white text-xs cursor-not-allowed opacity-80">
+                <span className="material-icons mr-1">apple</span> App Store
+              </div>
+              <div className="h-10 w-32 bg-black rounded-md flex items-center justify-center text-white text-xs cursor-not-allowed opacity-80">
+                <span className="material-icons mr-1">android</span> Google Play
+              </div>
+            </div>
+            <p className="mt-4 text-center text-xs text-gray-400">
+              By logging in, you agree to the <button className="underline hover:text-gray-500">Terms of Use</button> and <button className="underline hover:text-gray-500">Privacy Policy</button>
+            </p>
+          </div>
+
+        </div>
       </div>
     </div>
   );

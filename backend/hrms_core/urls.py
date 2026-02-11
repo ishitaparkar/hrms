@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/auth/', include('authentication.urls')),
     path('api/performance/', include('performance_management.urls')),
     path('api/attendance/', include('attendance_leave.urls')),
+    path('api/dashboard/', include('dashboard.urls')),
 ]
 
 # =============================================================================

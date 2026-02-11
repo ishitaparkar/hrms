@@ -7,6 +7,7 @@ import LeaveBalanceCard from '../components/leave/LeaveBalanceCard';
 import LeaveHistoryTable from '../components/leave/LeaveHistoryTable';
 import LeaveRequestForm from '../components/leave/LeaveRequestForm';
 import UpcomingHolidays from '../components/leave/UpcomingHolidays';
+import { getApiUrl } from '../utils/api';
 
 const MyLeavePage = () => {
   const [leaveData, setLeaveData] = useState(null);
@@ -25,7 +26,7 @@ const MyLeavePage = () => {
       setIsLoading(true);
       const token = localStorage.getItem('authToken');
       const response = await axios.get(
-        'http://127.0.0.1:8000/api/my-leave/',
+        getApiUrl('/my-leave/'),
         {
           headers: { 'Authorization': `Token ${token}` }
         }
@@ -55,7 +56,7 @@ const MyLeavePage = () => {
       setActionError(null);
       const token = localStorage.getItem('authToken');
       await axios.post(
-        'http://127.0.0.1:8000/api/leave-requests/',
+        getApiUrl('/leave-requests/'),
         requestData,
         {
           headers: { 'Authorization': `Token ${token}` }
@@ -84,7 +85,7 @@ const MyLeavePage = () => {
       setActionError(null);
       const token = localStorage.getItem('authToken');
       await axios.delete(
-        `http://127.0.0.1:8000/api/leave-requests/${requestId}/`,
+        getApiUrl(`/leave-requests/${requestId}/`),
         {
           headers: { 'Authorization': `Token ${token}` }
         }
