@@ -63,6 +63,11 @@ INSTALLED_APPS = [
     'payroll',
     'leave_management',
     'performance_management',
+    
+    # New apps for dynamic pages
+    'announcements',
+    'recruitment',
+    'asset_management',
 ]
 
 MIDDLEWARE = [

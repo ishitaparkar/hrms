@@ -18,6 +18,9 @@ urlpatterns = [
     path('api/performance/', include('performance_management.urls')),
     path('api/attendance/', include('attendance_leave.urls')),
     path('api/dashboard/', include('dashboard.urls')),
+    
+    # New dynamic pages apps
+    path('api/', include('announcements.urls')),
 ]
 
 # =============================================================================
